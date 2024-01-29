@@ -1,0 +1,13 @@
+[Unit]
+Description=Telegram bot
+After=network.target
+
+[Service]
+User=www
+WorkingDirectory=
+Restart=on-failure
+RestartSec=2s
+ExecStart=PATH -m app
+
+[Install]
+WantedBy=multi-user.target
