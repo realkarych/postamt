@@ -18,7 +18,7 @@
 - **Security:** POSTAMT never requests two-factor authentication and does not have access to the danger zone of your Email account. It does not delete emails, manage passwords and personal data. Connection is made via auto-generated IMAP/SMTP access keys. Your emails are not saved or cached anywhere after they are sent.
 
 ## ❞ Why named POSTAMT?
-This project is named in honor of the St. Petersburg Main Post Office [Главпочтамт], a monument of Russian history and culture.
+This project is named in honor of the St. Petersburg Main Post Office [Главпочтамт / Glavpochtamt], a monument of Russian history and culture.
 
 "Postamt" is a German word that translates to "post office" in English. It refers to a facility or building where postal services are provided. Post offices are responsible for handling mail and packages, selling postage stamps, offering various postal services, and providing a range of other services related to mail delivery and communication. Postamt plays a crucial role in the postal system, facilitating the sending and receiving of mail and packages within a region or country.
 
