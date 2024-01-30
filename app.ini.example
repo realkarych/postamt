@@ -1,6 +1,6 @@
 [bot]
-token =
-parse_mode = HTML
+token = 
+default_locale = en
 
 [db]
 host = localhost

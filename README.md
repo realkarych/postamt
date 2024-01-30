@@ -1,7 +1,7 @@
 
 Telegram ChatBot that helps manage Emails. Replaces desktop and mobile Email clients in 99% of cases.
 
-**Open Bot:** https://postamt_robot.t.me/
+**Open Bot:** https://postamt_robot.t.me or https://t.me/postamt_robot
 
 ## Features
 
@@ -16,11 +16,12 @@ Telegram ChatBot that helps manage Emails. Replaces desktop and mobile Email cli
 ## Installation
 We acknowledge your desire for full control over your data. Therefore, all source codes for the project are open, allowing you to host the project locally on your own. 
 
-Follow the Guideline: <a href="./INSTALLATION.md">INSTALLATION.md</a>
+- Check our Docs: <a href="./DOCS.md">DOCS.md</a>
+- Follow the Guideline: <a href="./INSTALLATION.md">INSTALLATION.md</a>
 
 ## Contributing
 We welcome contributions from developers and non-developers alike! If you're a developer, you can make a direct impact by contributing code. Clone the repository, make your changes, and submit a pull request.
 
-Not a developer? No problem! You can still contribute by creating issues, reporting bugs, or suggesting new ideas for project improvement (do this via GitHub Issues). Your insights and feedback are invaluable to our collective success.
+Not a developer? No problem! You can still contribute by creating issues, reporting bugs, or suggesting new ideas for project improvement (do this via GitHub Issues). Your insights and feedback are invaluable to our collective success and helps us to create the best non-native Email client.
 
 Thank you for your contribution and support to the project!

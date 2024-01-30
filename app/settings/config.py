@@ -1,51 +1,43 @@
 import configparser
 import os
-from dataclasses import dataclass
 
 from app.settings import paths
+from pydantic import BaseModel, PostgresDsn, field_validator
+from typing import Optional
 
 
-@dataclass
-class Bot:
+class BotConfig(BaseModel):
     """Bot config"""
     token: str
-    parse_mode: str
+    default_locale: str = "en"
+    parse_mode: str = "HTML"
 
 
-@dataclass
-class DB:
+class DBConfig(BaseModel):
     """Database config"""
-    host: str
-    port: int
-    name: str
-    user: str
-    password: str
+    host: Optional[str] = None
+    port: Optional[int] = None
+    name: Optional[str] = None
+    user: Optional[str] = None
+    password: Optional[str] = None
 
+    @field_validator("SQLALCHEMY_DATABASE_URI", mode="before")
     def get_uri(self) -> str:
-        """Returns uri of postgres database."""
-        return f"postgresql+asyncpg://{self.user}:{self.password}@{self.host}/{self.name}"
+        """Returns URI of PostgreSQL database"""
+        return PostgresDsn.build(  # type: ignore
+            scheme="postgresql+asyncpg",
+            username=self.user,
+            password=self.password,
+            host=self.host,
+            port=self.port,
+            path=f"/{self.name}",
+        )
 
 
-@dataclass
-class Config:
+class Config(BaseModel):
     """Configurator"""
-    bot: Bot
-    db: DB
-
-
-def get_parse_mode(bot_section: configparser.SectionProxy) -> str:
-    """
-    Get & return parse mode. Provides to bot instance.
-    :param bot_section: configparser section
-    """
-
-    try:
-        if bot_section["parse_mode"] in ("HTML", "MarkdownV2"):
-            return bot_section["parse_mode"]
-        return "HTML"
-    # Param parse_mode isn't set in app.ini. HTML will be set.
-    except KeyError:
-        return "HTML"
+    bot: BotConfig
+    db: DBConfig
 
 
 def load_config() -> Config:
@@ -53,24 +45,21 @@ def load_config() -> Config:
 
     config_file_path = paths.ROOT_DIR / "app.ini"
 
-    # If developer wasn't created app.ini configuration file, raising an exception
     if not os.path.exists(config_file_path):
         raise ValueError("app.ini wasn't created!")
 
     config = configparser.ConfigParser()
     config.read(config_file_path)
 
-    # Get .ini config "blocks"
     bot = config["bot"]
     db = config["db"]
 
-    # Get & return config data instance
     return Config(
-        bot=Bot(
+        bot=BotConfig(
             token=bot["token"],
-            parse_mode=get_parse_mode(bot_section=bot)
+            default_locale=bot["default_locale"],
         ),
-        db=DB(
+        db=DBConfig(
             host=db["host"],
             port=int(db["port"]),
             name=db["name"],
