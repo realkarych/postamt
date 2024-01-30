@@ -1,6 +1,6 @@
-<img src="https://github.com/realkarych/postamt/assets/62261985/31f016fb-f5fa-4c23-9fde-9571a77c3bbe" alt="POSTAMT" width="480" height="584">
+*<p align=center>POSTAMT is a Telegram ChatBot that replaces desktop and mobile Email clients in 99% of daily task cases</p>*
 
-*Telegram ChatBot that replaces desktop and mobile Email clients in 99% of daily task cases*
+<hr>
 
 ## 👋 Say hello to POSTAMT
 - **Web3 url:** https://postamt_robot.t.me
