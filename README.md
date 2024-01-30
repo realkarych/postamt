@@ -24,6 +24,17 @@ This project is named in honor of the St. Petersburg Main Post Office [Глав�
 
 Our postamt semantically resembles a post office.
 
+## 📊 Roadmap [to the first beta]
+- [x] **Scope:** Define project scope and objectives
+- [x] **Architecture:** Set up basic project structure
+- [ ] **Core service:** Implement core imap & smtp services
+- [ ] **Database:** Implement data schemas and repositories
+- [ ] **Telegram "UI" stage 1:** Implement base functionality with registration, adding Email account, group setup
+- [ ] **Telegram "UI" stage 2:** Implement Telegram WebViews to check emails
+- [ ] **Telegram "UI" stage 3:** Implement UI to send emails
+- [ ] **Flood controller:** Set up anti-spam system (on middlewares layer)
+- [ ] **Channel subscription:** To use bot, user need to be subscribed to https://t.me/postamt_channel (create filter)
+
 ## 🖥️ Installation
 We acknowledge your desire for full control over your data. Therefore, all source codes for the project are open, allowing you to host the project locally on your own. 
 
