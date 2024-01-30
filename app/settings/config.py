@@ -2,7 +2,7 @@ import configparser
 import os
 
 from app.settings import paths
-from pydantic import BaseModel, PostgresDsn, field_validator
+from pydantic import BaseModel, PostgresDsn
 from typing import Optional
 
 
@@ -21,17 +21,17 @@ class DBConfig(BaseModel):
     user: Optional[str] = None
     password: Optional[str] = None
 
-    @field_validator("SQLALCHEMY_DATABASE_URI", mode="before")
     def get_uri(self) -> str:
         """Returns URI of PostgreSQL database"""
-        return PostgresDsn.build(  # type: ignore
+        dsn = PostgresDsn.build(  # type: ignore
             scheme="postgresql+asyncpg",
             username=self.user,
             password=self.password,
             host=self.host,
             port=self.port,
-            path=f"/{self.name}",
+            path=self.name,
         )
+        return str(dsn)
 
 
 class Config(BaseModel):

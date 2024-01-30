@@ -10,7 +10,6 @@ from aiogram.utils.i18n import I18n, SimpleI18nMiddleware
 from app.core.handlers import factory
 from app.core.handlers.private_chat import base
 from app.core.middlewares.db import DbSessionMiddleware
-from app.core.middlewares.i18n import TranslatorRunnerMiddleware
 from app.core.navigations.command import set_bot_commands
 from app.services.database.connector import setup_get_pool
 from app.settings import paths
@@ -23,7 +22,7 @@ async def main() -> None:
     config = load_config()
 
     logging.basicConfig(
-        level=logging.INFO,
+        level=logging.DEBUG,
         format="%(asctime)s - %(levelname)s - %(name)s - %(message)s"
     )
 
@@ -38,10 +37,6 @@ async def main() -> None:
     dp.message.middleware(DbSessionMiddleware(session_pool))
     dp.callback_query.middleware(DbSessionMiddleware(session_pool))
     dp.edited_message.middleware(DbSessionMiddleware(session_pool))
-
-    dp.message.middleware(TranslatorRunnerMiddleware())
-    dp.callback_query.middleware(TranslatorRunnerMiddleware())
-    dp.edited_message.middleware(TranslatorRunnerMiddleware())
 
     # Provide your handlers here:
     factory.register(dp, base, )
