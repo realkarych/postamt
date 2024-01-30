@@ -1,37 +1,7 @@
-import pydantic_settings
 from app.utils import paths
-from pydantic import BaseModel, PostgresDsn
+from pydantic import PostgresDsn
 from pydantic_settings import BaseSettings
-from typing import Final, Optional
-
-class BotConfig(BaseModel):
-    """Bot config"""
-
-    token: str
-    default_locale: str = "en"
-    parse_mode: str = "HTML"
-
-
-class DBConfig(BaseModel):
-    """Database config"""
-
-    host: Optional[str] = None
-    port: Optional[int] = None
-    name: Optional[str] = None
-    user: Optional[str] = None
-    password: Optional[str] = None
-
-    def get_uri(self) -> str:
-        """Returns URI of PostgreSQL database"""
-        dsn = PostgresDsn.build(  # type: ignore
-            scheme="postgresql+asyncpg",
-            username=self.user,
-            password=self.password,
-            host=self.host,
-            port=self.port,
-            path=self.name,
-        )
-        return str(dsn)
+from typing import Final
 
 
 class Config(BaseSettings):
