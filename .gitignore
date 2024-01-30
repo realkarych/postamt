@@ -37,5 +37,4 @@ docs/_build/
 poetry.lock
 .DS_Store
 .idea
-app.ini
-alembic.ini
+.env
