@@ -1,4 +1,4 @@
-*<p align=center>POSTAMT is a Telegram ChatBot that replaces desktop and mobile Email clients in 99% of daily task cases</p>*
+*<p align=center>POSTAMT is a Telegram ChatBot that replaces mobile and desktop Email clients in 99% of daily task cases</p>*
 
 <hr>
 
