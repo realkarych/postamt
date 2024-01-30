@@ -27,6 +27,7 @@ Our postamt semantically resembles a post office.
 ## 📊 Roadmap [to the first beta]
 - [x] **Scope:** Define project scope and objectives
 - [x] **Architecture:** Set up basic project structure
+- [ ] **Docker:** Set up docker to simplify development & delivery
 - [ ] **Core service:** Implement core imap & smtp services
 - [ ] **Database:** Implement data schemas and repositories
 - [ ] **Telegram "UI" stage 1:** Implement base functionality with registration, adding Email account, group setup
@@ -34,6 +35,7 @@ Our postamt semantically resembles a post office.
 - [ ] **Telegram "UI" stage 3:** Implement UI to send emails
 - [ ] **Flood controller:** Set up anti-spam system (on middlewares layer)
 - [ ] **Channel subscription:** To use bot, user need to be subscribed to https://t.me/postamt_channel (create filter)
+- [ ] **Grafana:** Add [Grafana](https://grafana.com/) dashboard to check statistics
 
 ## 🖥️ Installation
 We acknowledge your desire for full control over your data. Therefore, all source codes for the project are open, allowing you to host the project locally on your own. 
