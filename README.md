@@ -22,7 +22,7 @@ This project is named in honor of the St. Petersburg Main Post Office [Глав�
 
 "Postamt" is a German word that translates to "post office" in English. It refers to a facility or building where postal services are provided. Post offices are responsible for handling mail and packages, selling postage stamps, offering various postal services, and providing a range of other services related to mail delivery and communication. Postamt plays a crucial role in the postal system, facilitating the sending and receiving of mail and packages within a region or country.
 
-Our postamt semantically resembles a post office.
+Our POSTAMT semantically resembles a post office.
 
 ## 📊 Roadmap [to the first beta]
 - [x] **Scope:** Define project scope and objectives
