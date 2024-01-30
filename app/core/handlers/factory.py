@@ -7,8 +7,7 @@ from app.exceptions.handler import RegisterHandlerError
 
 def register(dp: Dispatcher, *handlers) -> None:
     """
-    Handlers registering. If `register()` wasn't implemented in module,
-    it skips with error log message.
+    Register handlers. If `register()` wasn't implemented in module, it skips with error message.
     :param handlers: .py handler-modules with implemented register() method.
     :param dp: Dispatcher.
     """

@@ -8,6 +8,7 @@ from typing import Optional
 
 class BotConfig(BaseModel):
     """Bot config"""
+
     token: str
     default_locale: str = "en"
     parse_mode: str = "HTML"
@@ -15,6 +16,7 @@ class BotConfig(BaseModel):
 
 class DBConfig(BaseModel):
     """Database config"""
+
     host: Optional[str] = None
     port: Optional[int] = None
     name: Optional[str] = None
@@ -36,6 +38,7 @@ class DBConfig(BaseModel):
 
 class Config(BaseModel):
     """Configurator"""
+
     bot: BotConfig
     db: DBConfig
 
