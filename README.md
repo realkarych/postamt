@@ -1,5 +1,6 @@
+<img src="https://github.com/realkarych/postamt/assets/62261985/31f016fb-f5fa-4c23-9fde-9571a77c3bbe" alt="POSTAMT" width="480" height="584">
 
-**This Telegram ChatBot replaces desktop and mobile Email clients in 99% of daily task cases.**
+*Telegram ChatBot that replaces desktop and mobile Email clients in 99% of daily task cases*
 
 ## 👋 Say hello to POSTAMT
 - **Web3 url:** https://postamt_robot.t.me
