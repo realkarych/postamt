@@ -21,12 +21,16 @@ async def main() -> None:
 
     logging.basicConfig(
         level=config.APP_LOGGING_LEVEL,
-        format="%(asctime)s - %(levelname)s - %(name)s - %(message)s"
+        format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
     )
 
     bot = Bot(config.BOT_TOKEN, parse_mode="HTML")
     dp = Dispatcher(bot=bot, storage=MemoryStorage())
-    i18n = I18n(path=str(paths.LOCALES_DIR), default_locale=config.BOT_DEFAULT_LOCALE, domain="bot")
+    i18n = I18n(
+        path=str(paths.LOCALES_DIR),
+        default_locale=config.BOT_DEFAULT_LOCALE,
+        domain="bot",
+    )
     session_pool = await setup_get_pool(db_uri=config.build_postgres_dsn())
 
     dp.message.middleware(SimpleI18nMiddleware(i18n))
@@ -37,7 +41,10 @@ async def main() -> None:
     dp.edited_message.middleware(DbSessionMiddleware(session_pool))
 
     # Provide your handlers here:
-    factory.register(dp, base, )
+    factory.register(
+        dp,
+        base,
+    )
 
     await set_bot_commands(bot=bot)
 

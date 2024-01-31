@@ -18,11 +18,9 @@ def register(dp: Dispatcher, *handlers) -> None:
                 dp.include_router(handler.register())
             except AttributeError as error:
                 raise RegisterHandlerError(
-                    f"register() method wasn't implemented "
-                    f"in {str(error.obj)}"
+                    f"register() method wasn't implemented " f"in {str(error.obj)}"
                 )
         else:
             raise RegisterHandlerError(
-                f"`{handler}` from submitted args to `register()` "
-                f"is not a module"
+                f"`{handler}` from submitted args to `register()` " f"is not a module"
             )

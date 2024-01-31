@@ -4,35 +4,26 @@ help:
 	@echo "  make <commands>"
 	@echo ""
 	@echo "AVAILABLE COMMANDS"
-	@echo "  run		Start the bot (for docker-compose usage)"
-	@echo "  project-start Start with docker-compose"
-	@echo "  project-stop  Stop docker-compose"
-	@echo "  lint		Reformat code"
+	@echo "  run		   Run App"
+	@echo "  debug 	       Run with stacktrace"
+	@echo "  stop          Stop docker-compose"
+	@echo "  lint		   Reformat code & check with flake8, pyright"
 	@echo "  requirements  Export poetry.lock to requirements.txt"
 
 .PHONY:	black
 black:
-	poetry run black app/ tests/
-
-.PHONY: isort
-isort:
-	poetry run isort app/ tests/
+	poetry run black app/
 
 .PHONY: flake
 flake:
-	poetry run flake8 app/ tests/
+	poetry run flake8 app/
 
 .PHONY: flake
 pyright:
-	poetry run pyright app/ tests/
+	poetry run pyright app/
 
 .PHONY: lint
-lint: black isort flake pyright
-
-.PHONY: run
-run:
-	migrate
-	poetry run python -m app
+lint: black flake pyright
 
 # Poetry and environments utils
 REQUIREMENTS_FILE := requirements.txt
@@ -56,10 +47,14 @@ migrate:
 	poetry run alembic upgrade head
 
 # Docker utils
-.PHONY: project-start
-project-start:
+.PHONY: debug
+debug:
 	docker-compose up --force-recreate ${MODE}
 
-.PHONY: project-stop
-project-stop:
+.PHONY: run
+run:
+	docker-compose up -d ${MODE}
+
+.PHONY: stop
+stop:
 	docker-compose down --remove-orphans ${MODE}

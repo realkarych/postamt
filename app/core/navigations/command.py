@@ -45,5 +45,5 @@ async def set_bot_commands(bot: Bot) -> None:
     # Private chat commands
     await bot.set_my_commands(
         commands=[command().to_bot_command() for command in PrivateChatCommands],
-        scope=BotCommandScopeAllPrivateChats()  # pyright: ignore
+        scope=BotCommandScopeAllPrivateChats(),  # pyright: ignore
     )
