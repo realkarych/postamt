@@ -10,6 +10,7 @@ greenlet = "*"
 asyncpg = "^0.29.0"
 sqlalchemy = "==2.0.25"
 alembic = "==1.13.1"
+pydantic-settings = "==2.1.0"
 
 [tool.poetry.dependencies.aiogram]
 version = "^3.3.0"

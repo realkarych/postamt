@@ -1,16 +1,13 @@
-from dataclasses import dataclass
 from enum import Enum, unique
 
 from aiogram import Bot
 from aiogram.types import BotCommand, BotCommandScopeAllPrivateChats
 
+from pydantic import BaseModel
 
-@dataclass
-class Command:
-    """
-    Command object is dto for organize the same interface to access /command
-    data in handlers & in commands-factory & in registrator.
-    """
+
+class Command(BaseModel):
+    """Represents wrapper on default Aiogram command"""
 
     name: str
     description: str
@@ -34,21 +31,19 @@ class BaseCommandList(Enum):
 
 class PrivateChatCommands(BaseCommandList):
     """
-    List of commands with public access & submission to Telegram menu list.
-    Do not implement here admin commands because of submission to menu.
+    List of commands submitted to Telegram menu list.
+    Do not implement here admin commands because of submission.
     For this case, create another commands list & factory.
     """
 
-    start = Command(name='start', description='Start Bot')
+    start = Command(name="start", description="Start Bot")
 
 
 async def set_bot_commands(bot: Bot) -> None:
-    """
-    Creates a commands' lists (shortcuts) in Telegram app menu.
-    """
+    """Creates a commands list in Telegram app menu."""
 
     # Private chat commands
     await bot.set_my_commands(
         commands=[command().to_bot_command() for command in PrivateChatCommands],
-        scope=BotCommandScopeAllPrivateChats()  # pyright: ignore
+        scope=BotCommandScopeAllPrivateChats(),  # pyright: ignore
     )

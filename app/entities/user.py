@@ -18,11 +18,11 @@ class User(BaseModel):
             id=self.id,
             username=self.username,
             firstname=self.first_name,
-            lastname=self.last_name
+            lastname=self.last_name,
         )
 
     @classmethod
-    def from_message(cls, message: types.Message) -> 'User':
+    def from_message(cls, message: types.Message) -> "User":
         """Creates User entity from message"""
         if not message.from_user:
             raise ValueError("Message does not have user")
@@ -30,5 +30,5 @@ class User(BaseModel):
             id=message.from_user.id,
             username=message.from_user.username,
             first_name=message.from_user.first_name,
-            last_name=message.from_user.last_name
+            last_name=message.from_user.last_name,
         )

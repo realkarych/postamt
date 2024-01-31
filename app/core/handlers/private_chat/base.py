@@ -20,9 +20,7 @@ async def cmd_start(m: types.Message, session: AsyncSession, state: FSMContext) 
     await repo.add_user(user)
     await repo.commit()
 
-    await m.answer(
-        text=_("Hello, {first_name}!").format(first_name=user.first_name)
-    )
+    await m.answer(text=_("Hello, {first_name}!").format(first_name=user.first_name))
 
 
 def register() -> Router:
@@ -31,7 +29,7 @@ def register() -> Router:
     router.message.register(
         cmd_start,
         ChatTypeFilter(chat_type=ChatType.PRIVATE),
-        Command(str(PrivateChatCommands.start))
+        Command(str(PrivateChatCommands.start)),
     )
 
     return router

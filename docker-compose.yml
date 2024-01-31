@@ -1,0 +1,33 @@
+version: '3.7'
+services:
+  db:
+    image: postgres:16.1
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: always
+    ports:
+      - "127.0.0.1:15432:5432"
+    hostname: db
+  bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - BOT_DEFAULT_LOCALE=en
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_HOST=db
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - APP_LOGGING_LEVEL=DEBUG
+      - BOT_TOKEN=${BOT_TOKEN}
+    restart: always
+    depends_on:
+      - db
+
+volumes:
+  pgdata:
