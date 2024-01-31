@@ -4,11 +4,11 @@ help:
 	@echo "  make <commands>"
 	@echo ""
 	@echo "AVAILABLE COMMANDS"
-	@echo "  run		   Run App"
-	@echo "  debug 	       Run with stacktrace"
-	@echo "  stop          Stop docker-compose"
-	@echo "  lint		   Reformat code & check with flake8, pyright"
-	@echo "  requirements  Export poetry.lock to requirements.txt"
+	@echo "  run		Run App (production)"
+	@echo "  debug		Run with stacktrace"
+	@echo "  stop		Stop docker-compose"
+	@echo "  lint		Reformat code & check with flake8, pyright"
+	@echo "  requirements	Export poetry.lock to requirements.txt"
 
 .PHONY:	black
 black:
