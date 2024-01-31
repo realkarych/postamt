@@ -10,7 +10,7 @@ We use Babel for localization. So here are the most common commands that you hav
 Our advise: managing locales is a very tedious and inconvenient process, so we use https://poedit.net/ to create translations faster.
 
 ## Run, Test & Deployment
-We use Docker to organize testing and deploying environments. Project runs in two Docker containers: 
+We use Docker and docker-compose to organize testing and deploying environments. Project runs in two Docker containers: 
 
 1) Bot
 2) PostgreSQL
@@ -18,7 +18,7 @@ We use Docker to organize testing and deploying environments. Project runs in tw
 **Launch app in Debug mode:** `make debug`
 **Launch app in Production mode:** `make run`
 
-**Check Makefile:** we provided the more useful commands to console cli. Run `make --help` to check them out.
+**Check Makefile:** we provided the more useful commands to console cli. Run `make help` to check them out.
 
 ## How to create postgres dump?
 For security reasons, we have disabled the ability to connect to the base outside of the server.

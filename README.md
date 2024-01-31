@@ -27,7 +27,7 @@ Our POSTAMT semantically resembles a post office.
 ## 📊 Roadmap [to the first beta]
 - [x] **Scope:** Define project scope and objectives
 - [x] **Architecture:** Set up basic project structure
-- [ ] **Docker:** Set up docker to simplify development & delivery
+- [x] **Docker:** Set up docker to simplify development & delivery
 - [ ] **Core service:** Implement core imap & smtp services
 - [ ] **Database:** Implement data schemas and repositories
 - [ ] **Telegram "UI" stage 1:** Implement base functionality with registration, adding Email account, group setup

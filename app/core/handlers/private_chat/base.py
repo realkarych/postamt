@@ -9,6 +9,7 @@ from app.core.filters.chat_type import ChatTypeFilter
 from app.core.navigations.command import PrivateChatCommands
 from app.entities.user import User
 from app.services.database.dao.user import UserRepository
+import logging
 
 
 async def cmd_start(m: types.Message, session: AsyncSession, state: FSMContext) -> None:
@@ -20,7 +21,8 @@ async def cmd_start(m: types.Message, session: AsyncSession, state: FSMContext) 
     await repo.add_user(user)
     await repo.commit()
 
-    await m.answer(text=_("Hello, {first_name}!").format(first_name=user.first_name))
+    await m.answer(text=_("<b>Hello, {first_name}!</b>").format(first_name=user.first_name))
+    logging.info(m.from_user)
 
 
 def register() -> Router:

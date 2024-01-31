@@ -7,6 +7,7 @@ help:
 	@echo "  run		Run App (production)"
 	@echo "  debug		Run with stacktrace"
 	@echo "  stop		Stop docker-compose"
+	@echo "  build		Run with stacktrace"
 	@echo "  lint		Reformat code & check with flake8, pyright"
 	@echo "  requirements	Export poetry.lock to requirements.txt"
 
@@ -47,12 +48,17 @@ migrate:
 	poetry run alembic upgrade head
 
 # Docker utils
+.PHONY: build
+build:
+	docker-compose build ${MODE}
+
 .PHONY: debug
 debug:
 	docker-compose up --force-recreate ${MODE}
 
 .PHONY: run
 run:
+	pybabel compile -d app/locales -D bot
 	docker-compose up -d ${MODE}
 
 .PHONY: stop

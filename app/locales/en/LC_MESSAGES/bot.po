@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-01-30 19:40+0300\n"
+"POT-Creation-Date: 2024-01-31 20:50+0300\n"
 "PO-Revision-Date: 2024-01-30 19:51+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -18,7 +18,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.14.0\n"
 
-#: app/core/handlers/private_chat/base.py:24
-msgid "Hello, {first_name}!"
+#: core/handlers/private_chat/base.py:24
+msgid "<b>Hello, {first_name}!</b>"
 msgstr ""
+
+#~ msgid "<b>Hello, {first_name}!</b>"
+#~ msgstr ""
 
