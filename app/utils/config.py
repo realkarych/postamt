@@ -2,6 +2,7 @@ from app.utils import paths
 from pydantic import PostgresDsn
 from pydantic_settings import BaseSettings
 from typing import Final
+from os import getenv
 
 
 class Config(BaseSettings):
@@ -12,11 +13,11 @@ class Config(BaseSettings):
 
     APP_LOGGING_LEVEL: str = "DEBUG"
 
-    DB_HOST: str
-    DB_PORT: int = 5432
-    DB_NAME: str = "postamt"
-    DB_USER: str
-    DB_PASSWORD: str
+    DB_HOST: str = getenv("DB_HOST", "localhost")
+    DB_PORT: int = int(getenv("DB_PORT", 5432))
+    DB_NAME: str = getenv("DB_NAME", "postamt")
+    DB_USER: str = getenv("DB_USER", "docker")
+    DB_PASSWORD: str = getenv("DB_PASSWORD", "")
 
     class Config:
         env_file = paths.ROOT_DIR / ".env"
