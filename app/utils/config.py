@@ -8,12 +8,11 @@ from os import getenv
 class Config(BaseSettings):
     """App config"""
 
-    BOT_TOKEN: str
-    BOT_DEFAULT_LOCALE: str = "en"
+    BOT_TOKEN: str = getenv("BOT_TOKEN", "")
+    BOT_DEFAULT_LOCALE: str = getenv("BOT_DEFAULT_LOCALE", "en")
+    APP_LOGGING_LEVEL: str = getenv("APP_LOGGING_LEVEL", "DEBUG")
 
-    APP_LOGGING_LEVEL: str = "DEBUG"
-
-    DB_HOST: str = getenv("DB_HOST", "localhost")
+    DB_HOST: str = getenv("DB_HOST", "172.16.11.125")
     DB_PORT: int = int(getenv("DB_PORT", 5432))
     DB_NAME: str = getenv("DB_NAME", "postamt")
     DB_USER: str = getenv("DB_USER", "docker")

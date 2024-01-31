@@ -1,4 +1,3 @@
-# Stage 1: Create a base image with Python and necessary tools
 FROM python:3.12-slim as python-base
 
 ENV POETRY_VERSION=1.7.1
