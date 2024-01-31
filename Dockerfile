@@ -6,7 +6,6 @@ ENV POETRY_VENV=/opt/poetry-venv
 
 ENV POETRY_CACHE_DIR=/opt/.cache
 
-# Install build dependencies
 RUN apt-get update \
     && apt-get install -y --no-install-recommends build-essential \
     && apt-get clean \
@@ -32,7 +31,6 @@ FROM poetry-base as app
 
 COPY .. .
 
-# Install the application dependencies
 RUN poetry install --no-interaction --no-ansi --no-dev
 
 WORKDIR /app

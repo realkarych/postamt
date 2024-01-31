@@ -11,7 +11,7 @@ services:
       - pgdata:/var/lib/postgresql/data
     restart: always
     ports:
-      - "15432:5432"
+      - "127.0.0.1:15432:5432"
     hostname: db
   bot:
     build:
@@ -19,10 +19,10 @@ services:
       dockerfile: Dockerfile
     environment:
       - BOT_DEFAULT_LOCALE=en
-      - DB_NAME=${POSTGRES_DB}
-      - DB_USER=${POSTGRES_USER}
-      - DB_PASSWORD=${POSTGRES_PASSWORD}
-      - DB_HOST=db
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_HOST=db
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - APP_LOGGING_LEVEL=DEBUG
       - BOT_TOKEN=${BOT_TOKEN}
     restart: always
