@@ -13,7 +13,7 @@ help:
 
 .PHONY:	black
 black:
-	poetry run black app/
+	poetry run black --line-length 119 app/
 
 .PHONY: flake
 flake:

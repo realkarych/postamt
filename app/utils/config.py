@@ -21,6 +21,7 @@ class Config(BaseSettings):
     class Config:
         env_file = paths.ROOT_DIR / ".env"
         env_file_encoding = "utf-8"
+        frozen = True
 
     def build_postgres_dsn(self) -> str:
         """Returns URI of PostgreSQL database"""
