@@ -76,6 +76,30 @@ class EmailServers(Enum):
         imap=EmailServerData(host="imap.mail.ru", port=993),
         smtp=EmailServerData(host="smtp.mail.ru", port=465),
     )
+    ICLOUD = EmailServer(
+        id_="icloud",
+        title="iCloud",
+        imap=EmailServerData(host="imap.mail.me.com", port=993),
+        smtp=EmailServerData(host="smtp.mail.me.com", port=587),
+    )
+    OUTLOOK = EmailServer(
+        id_="outlook",
+        title="Outlook",
+        imap=EmailServerData(host="imap-mail.outlook.com", port=993),
+        smtp=EmailServerData(host="smtp-mail.outlook.com", port=587),
+    )
+    OFFICE365 = EmailServer(
+        id_="office365",
+        title="Office365",
+        imap=EmailServerData(host="outlook.office365.com", port=993),
+        smtp=EmailServerData(host="smtp.office365.com", port=587),
+    )
+    YAHOO = EmailServer(
+        id_="yahoo",
+        title="Yahoo",
+        imap=EmailServerData(host="imap.mail.yahoo.com", port=993),
+        smtp=EmailServerData(host="smtp.mail.yahoo.com", port=465),
+    )
 
     def __str__(self) -> str:
         return str(self.value)
