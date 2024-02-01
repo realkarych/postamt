@@ -1,3 +1,4 @@
+from enum import Enum
 from click import Path
 from pydantic import BaseModel, EmailStr
 from typing import Optional
@@ -27,3 +28,62 @@ class Email(BaseModel):
 
     class Config:
         frozen = True
+
+
+class EmailServerData(BaseModel):
+    """Represents email server (smtp or imap) connection settings"""
+
+    host: str
+    port: int
+
+    class Config:
+        frozen = True
+
+
+class EmailServer(BaseModel):
+    """Represents email server (smtp or imap)"""
+
+    id_: str  # Unique id of email server
+    title: str  # Represents email server title
+    imap: EmailServerData  # Represents imap connection settings
+    smtp: EmailServerData  # Represents smtp connection settings
+
+    def __str__(self) -> str:
+        return self.title
+
+    class Config:
+        frozen = True
+
+
+class EmailServers(Enum):
+    """Represents supported email servers"""
+
+    GMAIL = EmailServer(
+        id_="gmail",
+        title="Gmail",
+        imap=EmailServerData(host="imap.gmail.com", port=993),
+        smtp=EmailServerData(host="smtp.gmail.com", port=465),
+    )
+    YANDEX = EmailServer(
+        id_="yandex",
+        title="Yandex",
+        imap=EmailServerData(host="imap.yandex.ru", port=993),
+        smtp=EmailServerData(host="smtp.yandex.ru", port=465),
+    )
+    MAILRU = EmailServer(
+        id_="mailru",
+        title="Mail.ru",
+        imap=EmailServerData(host="imap.mail.ru", port=993),
+        smtp=EmailServerData(host="smtp.mail.ru", port=465),
+    )
+
+    def __str__(self) -> str:
+        return str(self.value)
+
+
+def get_server_by_id(id_: str) -> EmailServer:
+    """Returns email server by id"""
+    for server in EmailServers:
+        if server.value.id_ == id_:
+            return server.value
+    raise ValueError(f"Email server with id '{id_}' not found")
