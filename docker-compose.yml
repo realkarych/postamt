@@ -25,6 +25,7 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - APP_LOGGING_LEVEL=DEBUG
       - BOT_TOKEN=${BOT_TOKEN}
+      - EMAIL_FERNET_KEY=${EMAIL_FERNET_KEY}
     restart: always
     depends_on:
       - db

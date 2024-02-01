@@ -15,7 +15,7 @@
 
 - **Multi-Account Support:** Connect and manage multiple email accounts within a single interface.
 
-- **Security:** POSTAMT never requests two-factor authentication and does not have access to the danger zone of your Email account. It does not delete emails, manage passwords and personal data. Connection is made via auto-generated IMAP/SMTP access keys. Your emails are not saved or cached anywhere after they are sent.
+- **Security:** POSTAMT never requests two-factor authentication and does not have access to the danger zone of your Email account. It does not delete emails, manage passwords and personal data. Connection is made via auto-generated IMAP/SMTP access keys. Your emails are not saved or cached anywhere after having read (even on the Telegram servers)
 
 ## ❞ Why named POSTAMT?
 This project is named in honor of the St. Petersburg Main Post Office [Главпочтамт / Glavpochtamt], a monument of Russian history and culture.

@@ -5,6 +5,9 @@ from typing import Final
 from os import getenv
 
 
+FERNET_KEYS_ENCODING: Final[str] = "utf-8"
+
+
 class Config(BaseSettings):
     """App config"""
 
@@ -17,6 +20,8 @@ class Config(BaseSettings):
     POSTGRES_DB: str = getenv("POSTGRES_DB", "postamt")
     POSTGRES_USER: str = getenv("POSTGRES_USER", "docker")
     POSTGRES_PASSWORD: str = getenv("DB_PASSWORD", "")
+
+    EMAIL_FERNET_KEY: bytes = bytes(getenv("EMAIL_FERNET_KEY", ""), encoding=FERNET_KEYS_ENCODING)
 
     class Config:
         env_file = paths.ROOT_DIR / ".env"
