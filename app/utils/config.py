@@ -8,7 +8,7 @@ from os import getenv
 FERNET_KEYS_ENCODING: Final[str] = "utf-8"
 
 
-class Config(BaseSettings):
+class _Config(BaseSettings):
     """App config"""
 
     BOT_TOKEN: str = getenv("BOT_TOKEN", "")
@@ -41,4 +41,4 @@ class Config(BaseSettings):
         return str(dsn)
 
 
-config: Final[Config] = Config()
+config: Final[_Config] = _Config()
