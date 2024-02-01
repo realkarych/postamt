@@ -30,6 +30,19 @@ class Email(BaseModel):
         frozen = True
 
 
+class EmailAuthData(BaseModel):
+    """
+    Represents email user (sender or recipient) authentication data
+    Remember: password is a generated smtp/imap-key in email server app, not a password from email account
+    """
+
+    email: EmailStr
+    password: str
+
+    class Config:
+        frozen = True
+
+
 class EmailServerData(BaseModel):
     """Represents email server (smtp or imap) connection settings"""
 
