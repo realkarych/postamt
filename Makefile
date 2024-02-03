@@ -55,6 +55,7 @@ build:
 .PHONY: debug
 debug:
 	docker-compose down --remove-orphans ${MODE}
+	docker rmi postamt-bot
 	docker-compose build ${MODE}
 	docker-compose up --force-recreate ${MODE}
 
