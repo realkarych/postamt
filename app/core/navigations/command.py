@@ -36,7 +36,7 @@ class PrivateChatCommands(BaseCommandList):
     For this case, create another commands list & factory.
     """
 
-    start = Command(name="start", description="Start Bot")
+    start = Command(name="start", description="Restart POSTAMT")
 
 
 async def set_bot_commands(bot: Bot) -> None:
