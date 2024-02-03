@@ -6,7 +6,7 @@ from aiogram.utils.i18n import gettext as _
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.filters.chat_type import ChatTypeFilter
-from app.core.navigations.command import PrivateChatCommands
+from app.core.commands.command import PrivateChatCommands
 from app.entities.user import User
 from app.services.database.dao.user import UserRepository
 
