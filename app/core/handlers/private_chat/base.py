@@ -7,10 +7,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.filters.chat_type import ChatTypeFilter
 from app.core.commands.command import PrivateChatCommands
+from app.entities.email import EmailAuthData, EmailServers
 from app.entities.user import User
 from app.services.database.dao.user import UserRepository
 
-import logging
+from app.services.email.imap.repository import ImapRepo
+
+from app.services.email.imap.session import ImapSession
 
 
 async def cmd_start(m: types.Message, session: AsyncSession, state: FSMContext) -> None:
@@ -23,7 +26,16 @@ async def cmd_start(m: types.Message, session: AsyncSession, state: FSMContext) 
     await repo.commit()
 
     await m.answer(text=_("<b>Hello, {first_name}!</b>").format(first_name=user.first_name))
-    logging.info(m.from_user)
+
+    async with ImapSession(
+        server=EmailServers.YANDEX,
+        auth_data=EmailAuthData(
+            email="yakarych@ya.ru",
+            password="ckqwztetzufxrddt",
+        ),
+    ) as imap_session:
+        repo = ImapRepo(session=imap_session)
+        await repo.select_email_ids()
 
 
 def register() -> Router:

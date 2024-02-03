@@ -54,6 +54,8 @@ build:
 
 .PHONY: debug
 debug:
+	docker-compose down --remove-orphans ${MODE}
+	docker-compose build ${MODE}
 	docker-compose up --force-recreate ${MODE}
 
 .PHONY: run

@@ -1,5 +1,5 @@
 from enum import Enum
-from click import Path
+from pathlib import Path
 from pydantic import BaseModel, EmailStr
 from typing import Optional
 import datetime

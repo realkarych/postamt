@@ -31,7 +31,7 @@ FROM poetry-base as app
 
 COPY .. .
 
-RUN poetry install --no-interaction --no-ansi --no-dev
+RUN poetry install --no-interaction --no-ansi --only main
 
 WORKDIR /app
 
