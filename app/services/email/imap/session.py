@@ -1,8 +1,9 @@
 import asyncio
 from contextlib import suppress
-import logging
 from app.entities.email import EmailAuthData, EmailServer, EmailServers
 import aioimaplib
+
+from app.exceptions.email import BadResponse, ImapConnectionFailed
 
 
 _CONNECTION_ATTEMPTS = 10  # Number of times to attempt to connect to the IMAP server. If not -> connection error
@@ -23,17 +24,15 @@ class ImapSession:
                     host=self._server.imap.host,
                     port=self._server.imap.port,
                 )
-                await self._session.wait_hello_from_server()
-                await self._session.login(
-                    user=str(self._auth_data.email),
-                    password=self._auth_data.password,
-                )
-                # Connection successful
+                await self._try_login()
                 if self._session.status == "AUTH":
                     break
-
+            # If connection failed, wait and try again
             await asyncio.sleep(_CONNECTION_ATTEMPTS_DELAY)
             connection_attempt += 1
+        # If connection failed _CONNECTION_ATTEMPTS times, raise an exception
+        else:
+            raise ImapConnectionFailed("Failed to connect to the server ({server}) with auth_data={self._auth_data}")
 
         return self
 
@@ -41,9 +40,38 @@ class ImapSession:
         await self._session.logout()
 
     async def select_folder(self, folder: str = "INBOX") -> None:
+        """Selects a folder in the mailbox"""
         await self._session.select(mailbox=folder)
 
-    async def select_email_ids(self, flag: str = "ALL"):
-        """Returns a tuple of email ids that match the given flag in ascending order"""
+    async def select_email_ids(self, flag: str = "ALL") -> list[str]:
+        """
+        Returns a tuple of email ids that match the given flag in ascending ids order:
+        the newest email id is the last in the list
+        """
         status, data = await self._session.search(flag)
-        logging.info(f"status: {status}, data: {data}")
+        return [str(i) for i in data[0].split()] if status == "OK" else []
+
+    async def fetch_email(self, email_id: str) -> bytes:
+        """Fetches email by it's id in mailbox and returns it's content as bytes"""
+        return await self._fetch_email(email_id)
+
+    async def _fetch_email(self, email_id: str) -> bytes:
+        status, data = await self._session.fetch(email_id, "(RFC822)")
+        if status == "OK":
+            try:
+                return data[1]
+            except IndexError:
+                pass
+        raise BadResponse(
+            f"Bad response from server ({self._server}): auth_data={self._auth_data}, status={status}, data={data}, "
+            f"email_id={email_id}"
+        )
+
+    async def _try_login(self) -> None:
+        """Attempts to login to the server"""
+        await self._session.wait_hello_from_server()
+        await self._session.login(
+            user=str(self._auth_data.email),
+            password=self._auth_data.password.get_secret_value(),
+        )
+        await self.select_folder()

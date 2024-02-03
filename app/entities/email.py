@@ -1,6 +1,6 @@
 from enum import Enum
 from pathlib import Path
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, SecretStr
 from typing import Optional
 import datetime
 
@@ -37,7 +37,7 @@ class EmailAuthData(BaseModel):
     """
 
     email: EmailStr
-    password: str
+    password: SecretStr
 
     class Config:
         frozen = True
