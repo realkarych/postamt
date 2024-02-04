@@ -4,7 +4,7 @@ from aiogram.enums import ChatType
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.utils.i18n import gettext as _
-from pydantic import EmailStr, SecretStr
+from pydantic import SecretStr
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.filters.chat_type import ChatTypeFilter
@@ -32,7 +32,7 @@ async def cmd_start(m: types.Message, session: AsyncSession, state: FSMContext) 
     async with ImapSession(
         server=EmailServers.YANDEX,
         auth_data=EmailAuthData(
-            email=EmailStr(""),
+            email="",
             password=SecretStr(""),
         ),
     ) as imap_session:
