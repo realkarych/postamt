@@ -49,7 +49,13 @@ class ImapSession:
         the newest email id is the last in the list
         """
         status, data = await self._session.search(flag)
-        return [str(i) for i in data[0].split()] if status == "OK" else []
+        email_ids = [str(i) for i in data[0].split()]
+        if not email_ids:
+            return []
+        # API has a bug: last email id is not present in the list
+        # so we add it manually
+        email_ids.append(str(int(email_ids[-1]) + 1))
+        return email_ids if status == "OK" else []
 
     async def fetch_email(self, email_id: str) -> bytes:
         """Fetches email by it's id in mailbox and returns it's content as bytes"""
