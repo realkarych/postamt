@@ -1,3 +1,4 @@
+import logging
 from aiogram import types, Router
 from aiogram.enums import ChatType
 from aiogram.filters import Command
@@ -31,11 +32,13 @@ async def cmd_start(m: types.Message, session: AsyncSession, state: FSMContext) 
     async with ImapSession(
         server=EmailServers.YANDEX,
         auth_data=EmailAuthData(
-            email="email",
-            password=SecretStr("password"),
+            email="",
+            password=SecretStr(""),
         ),
     ) as imap_session:
         repo = ImapRepo(session=imap_session)
+        async for email in repo.fetch_emails(email_ids=["1", "2", "3"]):
+            logging.info(email)
 
 
 def register() -> Router:

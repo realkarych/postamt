@@ -1,5 +1,6 @@
 import asyncio
 from contextlib import suppress
+import logging
 from app.entities.email import EmailAuthData, EmailServer, EmailServers
 import aioimaplib
 
@@ -18,18 +19,18 @@ class ImapSession:
         self._auth_data = auth_data
 
     async def __aenter__(self) -> "ImapSession":
-        while connection_attempt := 0 < _CONNECTION_ATTEMPTS:
+        for _ in range(_CONNECTION_ATTEMPTS):
             with suppress(TimeoutError):
                 self._session = aioimaplib.IMAP4_SSL(
                     host=self._server.imap.host,
                     port=self._server.imap.port,
                 )
                 await self._try_login()
-                if self._session.status == "AUTH":
+                if self._session.get_state() in ("AUTH", "SELECTED", "AUTHENTICATED"):
+                    await self.select_folder()
                     break
             # If connection failed, wait and try again
             await asyncio.sleep(_CONNECTION_ATTEMPTS_DELAY)
-            connection_attempt += 1
         # If connection failed _CONNECTION_ATTEMPTS times, raise an exception
         else:
             raise ImapConnectionFailed("Failed to connect to the server ({server}) with auth_data={self._auth_data}")
@@ -74,4 +75,3 @@ class ImapSession:
             user=str(self._auth_data.email),
             password=self._auth_data.password.get_secret_value(),
         )
-        await self.select_folder()
