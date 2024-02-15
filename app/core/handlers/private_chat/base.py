@@ -18,6 +18,11 @@ from app.services.email.imap.repository import ImapRepository as ImapRepo
 from app.services.email.imap.session import ImapSession
 
 
+_DEBUG_EMAIL = "postamt.bot@yandex.ru"
+_DEBUG_NAME = "POSTAMT"
+_DEBUG_PASSWORD = "wethufafnpmcpihp"
+
+
 async def cmd_start(m: types.Message, session: AsyncSession, state: FSMContext) -> None:
     await state.clear()
 
@@ -31,11 +36,11 @@ async def cmd_start(m: types.Message, session: AsyncSession, state: FSMContext) 
     async with ImapSession(
         server=EmailServers.YANDEX,
         auth_data=EmailAuthData(
-            email="yakarych@yandex.ru",
-            password=SecretStr("mwcbjbsfasdixiix"),
+            email=_DEBUG_EMAIL,
+            password=SecretStr(_DEBUG_PASSWORD),
         ),
     ) as imap_session:
-        repo = ImapRepo(session=imap_session, user=EmailUser(email="yakarych@yandex.ru", name="Andrey Karchevsky"))
+        repo = ImapRepo(session=imap_session, user=EmailUser(email=_DEBUG_EMAIL, name=_DEBUG_NAME))
         async for email in repo.fetch_emails(email_ids=await repo.get_last_email_ids(3)):
             logging.info(email)
 
