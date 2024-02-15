@@ -49,7 +49,7 @@ class ImapSession:
         the newest email id is the last in the list
         """
         status, data = await self._session.search(flag)
-        email_ids = [str(i) for i in data[0].split()]
+        email_ids = [str(i[0]) for i in data[0].split()]
         if not email_ids:
             return []
         # API has a bug: last email id is not present in the list

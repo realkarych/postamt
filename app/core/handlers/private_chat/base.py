@@ -28,17 +28,17 @@ async def cmd_start(m: types.Message, session: AsyncSession, state: FSMContext) 
     await repo.commit()
 
     await m.answer(text=_("<b>Hello, {first_name}!</b>").format(first_name=user.first_name))
-
+    # TODO: Hide creds
     async with ImapSession(
         server=EmailServers.YANDEX,
         auth_data=EmailAuthData(
-            email="",
-            password=SecretStr(""),
+            email="yakarych@yandex.ru",
+            password=SecretStr("mwcbjbsfasdixiix"),
         ),
     ) as imap_session:
         repo = ImapRepo(session=imap_session)
-        async for email in repo.fetch_emails(email_ids=["1", "2", "3"]):
-            logging.info(email)
+        async for email in repo.fetch_emails(email_ids=await repo.get_last_email_ids(3)):
+            logging.info(str(email))
 
 
 def register() -> Router:

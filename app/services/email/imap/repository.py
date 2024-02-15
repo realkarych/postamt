@@ -22,12 +22,12 @@ class ImapRepository:
     async def get_first_email_ids(self, count: int = 1) -> list[str]:
         """Get the first sent email ids from the server"""
         all_ids = await self.get_all_email_ids()
-        return all_ids[:count]
+        return [str(id_) for id_ in all_ids[:count]]
 
     async def get_last_email_ids(self, count: int = 1) -> list[str]:
         """Get the last sent email ids from the server"""
         all_ids = await self.get_all_email_ids()
-        return all_ids[-count:]
+        return [str(id_) for id_ in all_ids[-count:]]
 
     async def select_folder(self, folder: str) -> None:
         """Selects a folder in the mailbox. Default is INBOX"""
