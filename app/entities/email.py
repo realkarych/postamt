@@ -1,8 +1,7 @@
 from enum import Enum
-from pathlib import Path
+from mailparser import MailParser
 from pydantic import BaseModel, EmailStr, SecretStr
 from typing import Optional
-import datetime
 
 
 class EmailUser(BaseModel):
@@ -15,19 +14,17 @@ class EmailUser(BaseModel):
         frozen = True
 
 
-class Email(BaseModel):
-    """Represents email (income or outcome)"""
+class IncomingEmail(BaseModel):
+    """Represents income email via IMAP protocol"""
 
-    id_: Optional[int] = None  # email id in user's Inbox
-    sender: Optional[EmailUser] = None
-    recipient: Optional[EmailUser] = None
-    subject: Optional[str] = None  # email subject
-    content: Optional[str] = None  # email content (normalized text in unicode utf-8)
-    date: Optional[datetime.datetime] = None  # email date sent
-    attachments_path: Optional[Path] = None  # Path to local temporary dir with email attachments
+    id_: str
+    sender: EmailUser
+    recipient: EmailUser
+    content: MailParser  # Provided by mailparser lib
 
     class Config:
         frozen = True
+        arbitrary_types_allowed = True
 
 
 class EmailAuthData(BaseModel):

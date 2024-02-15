@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.filters.chat_type import ChatTypeFilter
 from app.core.commands.command import PrivateChatCommands
-from app.entities.email import EmailAuthData, EmailServers
+from app.entities.email import EmailAuthData, EmailServers, EmailUser
 from app.entities.user import User
 from app.services.database.dao.user import UserRepository
 
@@ -35,9 +35,9 @@ async def cmd_start(m: types.Message, session: AsyncSession, state: FSMContext) 
             password=SecretStr("mwcbjbsfasdixiix"),
         ),
     ) as imap_session:
-        repo = ImapRepo(session=imap_session)
+        repo = ImapRepo(session=imap_session, user=EmailUser(email="yakarych@yandex.ru", name="Andrey Karchevsky"))
         async for email in repo.fetch_emails(email_ids=await repo.get_last_email_ids(3)):
-            logging.info(str(email))
+            logging.info(email)
 
 
 def register() -> Router:
