@@ -29,10 +29,11 @@ Our POSTAMT semantically resembles a post office.
 - [x] **Architecture:** Set up basic project structure
 - [x] **Docker:** Set up docker to simplify development & delivery
 - [x] **Cryptography:** Set up cryptography infrastructure to encrypt and decrypt secret data
-- [ ] **Core service:** Implement core imap & smtp services
+- [x] **Core service:** Implement IMAP-service
 - [ ] **Database:** Implement data schemas and repositories
 - [ ] **Telegram "UI" stage 1:** Implement base functionality with registration, adding Email account, group setup
 - [ ] **Telegram "UI" stage 2:** Implement Telegram WebViews to check emails
+- [ ] **Core service:** Implement SMTP-service
 - [ ] **Telegram "UI" stage 3:** Implement UI to send emails
 - [ ] **Flood controller:** Set up anti-spam system (on middlewares layer)
 - [ ] **Channel subscription:** To use bot, user need to be subscribed to https://t.me/postamt_channel (create filter)
