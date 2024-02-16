@@ -1,8 +1,14 @@
 import logging
-from typing import Any, AsyncGenerator, Iterable
+from pathlib import Path
+from typing import Any, AsyncGenerator, Generator, Iterable
 from app.entities.email import EmailUser, IncomingEmail
 from app.services.email.imap.session import ImapSession
 from mailparser import mailparser
+from contextlib import contextmanager
+import tempfile
+
+from app.utils import paths
+from os import listdir, path
 
 
 class ImapRepository:
@@ -45,3 +51,18 @@ class ImapRepository:
     async def _get_all_email_ids(self) -> list[str]:
         """Get email ids from the server in ascending order"""
         return await self._session.select_email_ids()
+
+    @contextmanager
+    def load_attachments(email: IncomingEmail) -> Generator[list[Path], Any, Any]:
+        """
+        Creates temporary directory and loads email attachments.
+        Returns list of file abspaths.
+        Removes directory after exit contextmanager.
+        """
+        dest = str(paths.TEMPORARY_ATTACHMENTS_DIR)
+        attachments_dir = tempfile.TemporaryDirectory(dir=dest)
+        email.content.write_attachments(attachments_dir)
+        try:
+            yield [Path(f) for f in listdir(dest) if path.isfile(path.join(dest, f))]
+        finally:
+            attachments_dir.cleanup()
