@@ -30,6 +30,7 @@ Our POSTAMT semantically resembles a post office.
 - [x] **Docker:** Set up docker to simplify development & delivery
 - [x] **Cryptography:** Set up cryptography infrastructure to encrypt and decrypt secret data
 - [x] **Core service:** Implement IMAP-service
+- [ ] **Migrations:** Setup migrations (alembic)
 - [ ] **Database:** Implement data schemas and repositories
 - [ ] **Telegram "UI" stage 1:** Implement base functionality with registration, adding Email account, group setup
 - [ ] **Telegram "UI" stage 2:** Implement Telegram WebViews to check emails
