@@ -28,10 +28,7 @@ class ImapRepository:
                 id_=email_id,
                 content=email_content,
                 recipient=self._user,
-                sender=EmailUser(
-                    email=str(email_content.from_[0][1]),
-                    name=str(email_content.from_[0][0])
-                )
+                sender=EmailUser(email=str(email_content.from_[0][1]), name=str(email_content.from_[0][0])),
             )
 
     async def get_first_email_ids(self, count: int = 1) -> list[str]:
@@ -53,7 +50,7 @@ class ImapRepository:
         return await self._session.select_email_ids()
 
     @contextmanager
-    def load_attachments(email: IncomingEmail) -> Generator[list[Path], Any, Any]:
+    def load_attachments(self, email: IncomingEmail) -> Generator[list[Path], Any, Any]:
         """
         Creates temporary directory and loads email attachments.
         Returns list of file abspaths.
