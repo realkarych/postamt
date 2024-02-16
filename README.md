@@ -15,7 +15,7 @@
 
 - **Multi-Account Support:** Connect and manage multiple email accounts within a single interface.
 
-- **Security:** POSTAMT never requests two-factor authentication and does not have access to the danger zone of your Email account. It does not delete emails, manage passwords and personal data. Connection is made via auto-generated IMAP/SMTP access keys. Your emails are not saved or cached anywhere after they are sent.
+- **Security:** POSTAMT never requests two-factor authentication and does not have access to the danger zone of your Email account. It does not delete emails, manage passwords and personal data. Connection is made via auto-generated IMAP/SMTP access keys. Your emails are not saved or cached anywhere after having read (even on the Telegram servers)
 
 ## ❞ Why named POSTAMT?
 This project is named in honor of the St. Petersburg Main Post Office [Главпочтамт / Glavpochtamt], a monument of Russian history and culture.
@@ -28,6 +28,7 @@ Our POSTAMT semantically resembles a post office.
 - [x] **Scope:** Define project scope and objectives
 - [x] **Architecture:** Set up basic project structure
 - [x] **Docker:** Set up docker to simplify development & delivery
+- [x] **Cryptography:** Set up cryptography infrastructure to encrypt and decrypt secret data
 - [ ] **Core service:** Implement core imap & smtp services
 - [ ] **Database:** Implement data schemas and repositories
 - [ ] **Telegram "UI" stage 1:** Implement base functionality with registration, adding Email account, group setup
