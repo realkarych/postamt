@@ -1,6 +1,5 @@
 import asyncio
 from contextlib import suppress
-import logging
 from app.entities.email import EmailAuthData, EmailServer, EmailServers
 import aioimaplib
 
