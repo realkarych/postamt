@@ -1,5 +1,6 @@
 import asyncio
 from contextlib import suppress
+import logging
 from app.entities.email import EmailAuthData, EmailServer, EmailServers
 import aioimaplib
 
@@ -54,7 +55,8 @@ class ImapSession:
             return []
         # API has a bug: last email id is not present in the list
         # so we add it manually
-        email_ids.append(str(int(email_ids[-1]) + 1))
+        if email_ids:
+            email_ids.append(str(int(email_ids[-1]) + 1))
         return email_ids if status == "OK" else []
 
     async def fetch_email(self, email_id: str) -> bytes:

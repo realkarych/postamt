@@ -2,6 +2,7 @@ import logging
 from pathlib import Path
 from typing import Any, AsyncGenerator, Generator, Iterable
 from app.entities.email import EmailUser, IncomingEmail
+from app.exceptions.email import BadResponse
 from app.services.email.imap.session import ImapSession
 from mailparser import mailparser
 from contextlib import contextmanager
@@ -22,7 +23,11 @@ class ImapRepository:
         """Fetch emails from the server"""
         for email_id in email_ids:
             logging.info(f"Fetching email with id={email_id}")
-            email_bytes = await self._session.fetch_email(email_id)
+            try:
+                email_bytes = await self._session.fetch_email(email_id)
+            except BadResponse as e:
+                logging.warn("{}\nFor email ids: {}".format(e, email_ids))
+                continue
             email_content = mailparser.parse_from_bytes(email_bytes)
             yield IncomingEmail(
                 id_=email_id,
@@ -39,6 +44,7 @@ class ImapRepository:
     async def get_last_email_ids(self, count: int = 1) -> list[str]:
         """Get the last sent email ids from the server"""
         all_ids = await self._get_all_email_ids()
+        logging.info("All found email ids: {}".format(all_ids))
         return [str(id_) for id_ in all_ids[-count:]]
 
     async def select_folder(self, folder: str) -> None:
