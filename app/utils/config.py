@@ -5,7 +5,10 @@ from typing import Final
 from os import getenv
 
 
-class Config(BaseSettings):
+FERNET_KEYS_ENCODING: Final[str] = "utf-8"
+
+
+class _Config(BaseSettings):
     """App config"""
 
     BOT_TOKEN: str = getenv("BOT_TOKEN", "")
@@ -18,9 +21,12 @@ class Config(BaseSettings):
     POSTGRES_USER: str = getenv("POSTGRES_USER", "docker")
     POSTGRES_PASSWORD: str = getenv("DB_PASSWORD", "")
 
+    EMAIL_FERNET_KEY: bytes = bytes(getenv("EMAIL_FERNET_KEY", ""), encoding=FERNET_KEYS_ENCODING)
+
     class Config:
         env_file = paths.ROOT_DIR / ".env"
         env_file_encoding = "utf-8"
+        frozen = True
 
     def build_postgres_dsn(self) -> str:
         """Returns URI of PostgreSQL database"""
@@ -35,4 +41,4 @@ class Config(BaseSettings):
         return str(dsn)
 
 
-config: Final[Config] = Config()
+config: Final[_Config] = _Config()

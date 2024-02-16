@@ -13,7 +13,7 @@ help:
 
 .PHONY:	black
 black:
-	poetry run black app/
+	poetry run black --line-length 119 app/
 
 .PHONY: flake
 flake:
@@ -54,6 +54,9 @@ build:
 
 .PHONY: debug
 debug:
+	docker-compose down --remove-orphans ${MODE}
+	docker rmi postamt-bot
+	docker-compose build ${MODE}
 	docker-compose up --force-recreate ${MODE}
 
 .PHONY: run

@@ -10,7 +10,7 @@ from aiogram.utils.i18n import I18n, SimpleI18nMiddleware
 from app.core.handlers import factory
 from app.core.handlers.private_chat import base
 from app.core.middlewares.db import DbSessionMiddleware
-from app.core.navigations.command import set_bot_commands
+from app.core.commands.command import set_bot_commands
 from app.services.database.connector import setup_get_pool
 from app.utils import paths
 from app.utils.config import config
