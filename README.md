@@ -1,3 +1,7 @@
+<p align="center" width="100%">
+    <img width="25%" src="https://github.com/realkarych/postamt/assets/62261985/b7545d92-6f06-4410-9873-8b52267216d0">
+</p>
+
 *<p align=center>POSTAMT is a Telegram ChatBot that replaces mobile and desktop Email clients in 99% of daily task cases</p>*
 
 <hr>
