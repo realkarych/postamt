@@ -20,6 +20,13 @@ We use Docker and docker-compose to organize testing and deploying environments.
 
 **Check Makefile:** we provided the more useful commands to console cli. Run `make help` to check them out.
 
+## Database schema update
+If you updated database schema, you need to migrate database with alembic.
+
+1) Install alembic locally
+2) Create revision: `alembic revision --autogenerate -m "provide your version update message here..."`
+3) Update head: `alembic upgrade head`
+
 ## How to create postgres dump?
 For security reasons, we have disabled the ability to connect to the base outside of the server.
 
