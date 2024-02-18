@@ -1,7 +1,7 @@
 """init
 
 Revision ID: 0b731f2fc0a4
-Revises: 
+Revises: Andrey Karchevsky (@Karych)
 Create Date: 2024-02-18 11:48:40.538409
 
 """
