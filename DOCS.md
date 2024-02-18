@@ -10,15 +10,22 @@ We use Babel for localization. So here are the most common commands that you hav
 Our advise: managing locales is a very tedious and inconvenient process, so we use https://poedit.net/ to create translations faster.
 
 ## Run, Test & Deployment
-We use Docker and docker-compose to organize testing and deploying environments. Project runs in two Docker containers: 
+We use Docker and docker-compose to organize testing and deploying environments. Project runs in two Docker containers:
 
 1) Bot
 2) PostgreSQL
 
-**Launch app in Debug mode:** `make debug`
+**Launch app in Debug mode (with stacktrace):** `make debug`
 **Launch app in Production mode:** `make run`
 
 **Check Makefile:** we provided the more useful commands to console cli. Run `make help` to check them out.
+
+## Database schema update
+If you updated database schema, you need to migrate database with alembic.
+
+1) Install alembic locally
+2) Create revision: `alembic revision --autogenerate -m "provide your version update message here..."`
+3) Update head: `alembic upgrade head`
 
 ## How to create postgres dump?
 For security reasons, we have disabled the ability to connect to the base outside of the server.

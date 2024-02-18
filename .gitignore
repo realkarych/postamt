@@ -38,3 +38,4 @@ poetry.lock
 .DS_Store
 .idea
 .env
+alembic.ini

@@ -15,4 +15,4 @@ class User(Base):
     registered_date = Column(DateTime(timezone=True), server_default=func.now())  # Date of /start command handling
 
     def __repr__(self) -> str:
-        return f"User: {self.id}, {self.username}, {self.firstname} " f"{self.lastname}, {self.registered_date}"
+        return f"User: {self.id} | @{self.username}, ({self.firstname}, {self.lastname}), {self.registered_date}"
