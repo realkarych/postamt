@@ -1,7 +1,7 @@
 version: '3.7'
 services:
   db:
-    image: postgres:16.1
+    image: postgres:16.2
     environment:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - PGDATA=/var/lib/postgresql/data/pgdata
