@@ -50,20 +50,19 @@ migrate:
 # Docker utils
 .PHONY: build
 build:
-	docker-compose build ${MODE}
+	docker compose build ${MODE}
 
 .PHONY: debug
 debug:
-	docker-compose down --remove-orphans ${MODE}
+	docker compose down --remove-orphans ${MODE}
 	docker rmi postamt-bot
-	docker-compose build ${MODE}
-	docker-compose up --force-recreate ${MODE}
+	docker compose build ${MODE}
+	docker compose up --force-recreate ${MODE}
 
 .PHONY: run
 run:
-	pybabel compile -d app/locales -D bot
-	docker-compose up -d ${MODE}
+	docker compose up -d ${MODE}
 
 .PHONY: stop
 stop:
-	docker-compose down --remove-orphans ${MODE}
+	docker compose down --remove-orphans ${MODE}
