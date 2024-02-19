@@ -33,6 +33,5 @@ coverage.xml
 .ropeproject
 *.log
 docs/_build/
-poetry.lock
 .env
 alembic.ini
