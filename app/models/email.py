@@ -1,8 +1,8 @@
 from sqlalchemy import Column, BigInteger, Boolean, String
-from app.services.database.base import BASE
+from app.services.database.base import Base
 
 
-class EmailBox(BASE):
+class EmailBox(Base):
     """Implements model for email boxes"""
 
     __tablename__ = "email_boxes"
@@ -14,7 +14,7 @@ class EmailBox(BASE):
     is_active = Column(Boolean, default=True)
 
 
-class EmailAuthData(BASE):
+class EmailAuthData(Base):
     """Implements model for email auth datas"""
 
     __tablename__ = "email_auth_datas"
@@ -25,7 +25,7 @@ class EmailAuthData(BASE):
     email_password = Column(String, nullable=False)
 
 
-class Topic(BASE):
+class Topic(Base):
     """Implements model for topics"""
 
     __tablename__ = "topics"
