@@ -10,14 +10,14 @@ greenlet = "*"
 asyncpg = "^0.29.0"
 sqlalchemy = "==2.0.25"
 alembic = "==1.13.1"
-pydantic-settings = "==2.1.0"
+pydantic-settings = "==2.2.1"
 cryptography = "^42.0.3"
 aioimaplib = "==1.0.1"
 email-validator = "^2.1.0.post1"
 mail-parser = "==3.15.0"
 
 [tool.poetry.dependencies.aiogram]
-version = "^3.3.0"
+version = "^3.4.1"
 extras = ["i18n"]
 
 [tool.poetry.group.dev.dependencies]
