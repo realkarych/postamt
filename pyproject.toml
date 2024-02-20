@@ -17,7 +17,7 @@ email-validator = "^2.1.0.post1"
 mail-parser = "==3.15.0"
 
 [tool.poetry.dependencies.aiogram]
-version = "^3.3.0"
+version = "^3.4.1"
 extras = ["i18n"]
 
 [tool.poetry.group.dev.dependencies]
