@@ -4,7 +4,7 @@ from app.entities.user import User
 
 
 class UserRepository:
-    """ORM queries for users table"""
+    """Implements ORM for user entity"""
 
     def __init__(self, session: AsyncSession):
         self._session = session
