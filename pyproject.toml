@@ -10,7 +10,7 @@ greenlet = "*"
 asyncpg = "^0.29.0"
 sqlalchemy = "==2.0.27"
 alembic = "==1.13.1"
-pydantic-settings = "==2.1.0"
+pydantic-settings = "==2.2.1"
 cryptography = "^42.0.3"
 aioimaplib = "==1.0.1"
 email-validator = "^2.1.0.post1"
@@ -23,7 +23,7 @@ extras = ["i18n"]
 [tool.poetry.group.dev.dependencies]
 flake8 = "^7.0.0"
 black = "^24.1.1"
-pyright = "^1.1.349"
+pyright = "^1.1.351"
 
 [build-system]
 requires = ["poetry-core"]
