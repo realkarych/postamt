@@ -1,19 +1,23 @@
-from pydantic import BaseModel
+from abc import ABCMeta, abstractmethod
 
 
-class ModelWithDBMixin(BaseModel):
+class ModelWithDBMixin(metaclass=ABCMeta):
     """Base model with database mixin"""
 
     pass
 
 
-class DecodedModel(ModelWithDBMixin):
-    """Model with database mixin for decoded data"""
+class DecryptedModel(ModelWithDBMixin):
+    """Model with database mixin for decrypted data"""
 
-    pass
+    @abstractmethod
+    def encrypt(self) -> "EncryptedModel":
+        pass
 
 
-class EncodedModel(ModelWithDBMixin):
-    """Model with database mixin for encoded data"""
+class EncryptedModel(ModelWithDBMixin):
+    """Model with database mixin for encrypted data"""
 
-    pass
+    @abstractmethod
+    def decrypt(self) -> "DecryptedModel":
+        pass
