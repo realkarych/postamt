@@ -59,12 +59,10 @@ def _convert_user_to_db_user(user: User) -> DBUser:
 
 
 def _convert_db_user_to_user(db_user: DBUser) -> User:
-    # I'm not stupid, `is not None` is needed here because sqlalchemy returns NoReturn.
-    # Pyright, please, don't be so strict.
     return User(
         id_=int(str(db_user.id)),
-        username=str(db_user.username) if db_user.username is not None else None,
-        firstname=str(db_user.firstname) if db_user.firstname is not None else None,
-        lastname=str(db_user.lastname) if db_user.lastname is not None else None,
+        username=str(db_user.username) if db_user.username else None,  # pyright: ignore
+        firstname=str(db_user.firstname) if db_user.firstname else None,  # pyright: ignore
+        lastname=str(db_user.lastname) if db_user.lastname else None,  # pyright: ignore
         registered_date=db_user.registered_date if db_user.registered_date is not None else None,  # pyright: ignore
     )
