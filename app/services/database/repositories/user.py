@@ -32,11 +32,9 @@ class UserRepo:
 
             except IntegrityError as e:
                 await self._session.rollback()
-                logging.info("Failed to add user to the database. User already exists: %s", e)
                 raise ModelExists("Failed to add user to the database") from e
             except SQLAlchemyError as e:
                 await self._session.rollback()
-                logging.error("Failed to add user to the database: %s", e)
                 raise DBError("Failed to add user to the database") from e
 
     async def get_user(self, user_id: int) -> Optional[User]:
