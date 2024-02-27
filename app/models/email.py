@@ -1,4 +1,4 @@
-from sqlalchemy import Column, BigInteger, Boolean, String
+from sqlalchemy import Column, BigInteger, Boolean, LargeBinary
 from app.services.database.base import Base
 
 
@@ -17,19 +17,9 @@ class EmailBox(Base):
 class EmailAuthData(Base):
     """Implements model for email auth datas"""
 
-    __tablename__ = "email_auth_datas"
+    __tablename__ = "email_auths"
 
     emailbox_id = Column(BigInteger, primary_key=True, nullable=False)
-    email_server_id = Column(String, nullable=False)
-    email_address = Column(String, nullable=False)
-    email_password = Column(String, nullable=False)
-
-
-class Topic(Base):
-    """Implements model for topics"""
-
-    __tablename__ = "topics"
-
-    forum_id = Column(BigInteger, primary_key=True, nullable=False)
-    topic_id = Column(BigInteger, nullable=False)
-    topic_title = Column(String, nullable=False)
+    email_server_id = Column(LargeBinary, nullable=False)
+    email_address = Column(LargeBinary, nullable=False)
+    email_password = Column(LargeBinary, nullable=False)
