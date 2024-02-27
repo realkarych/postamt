@@ -8,7 +8,8 @@ from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.utils.i18n import I18n, SimpleI18nMiddleware
 
 from app.core.handlers import factory
-from app.core.handlers.private_chat import base
+from app.core.handlers.private_chat import base as base_handlers
+from app.core.handlers import error as error_handlers
 from app.core.middlewares.db import DbSessionMiddleware
 from app.core.commands.command import set_bot_commands
 from app.services.database.connector import setup_get_pool
@@ -43,7 +44,8 @@ async def main() -> None:
     # Provide your handlers here:
     factory.register(
         dp,
-        base,
+        error_handlers,
+        base_handlers,
     )
 
     await set_bot_commands(bot=bot)
