@@ -1,4 +1,4 @@
-from sqlalchemy import Column, BigInteger, Boolean, String
+from sqlalchemy import Column, BigInteger, Boolean, LargeBinary
 from app.services.database.base import Base
 
 
@@ -13,23 +13,25 @@ class EmailBox(Base):
     last_handled_email_id = Column(BigInteger, nullable=False, default=0)
     is_active = Column(Boolean, default=True)
 
+    def __repr__(self) -> str:
+        return (
+            f"Emailbox: {self.id} | Owner ID: {self.owner_id}, Forum ID: {self.forum_id}, "
+            f"Last handled email ID: {self.last_handled_email_id}, Is active: {self.is_active}"
+        )
+
 
 class EmailAuthData(Base):
     """Implements model for email auth datas"""
 
-    __tablename__ = "email_auth_datas"
+    __tablename__ = "email_auths"
 
     emailbox_id = Column(BigInteger, primary_key=True, nullable=False)
-    email_server_id = Column(String, nullable=False)
-    email_address = Column(String, nullable=False)
-    email_password = Column(String, nullable=False)
+    email_server_id = Column(LargeBinary, nullable=False)
+    email_address = Column(LargeBinary, nullable=False)
+    email_password = Column(LargeBinary, nullable=False)
 
-
-class Topic(Base):
-    """Implements model for topics"""
-
-    __tablename__ = "topics"
-
-    forum_id = Column(BigInteger, primary_key=True, nullable=False)
-    topic_id = Column(BigInteger, nullable=False)
-    topic_title = Column(String, nullable=False)
+    def __repr__(self) -> str:
+        return (
+            f"EmailAuthData for {self.emailbox_id} | Email server ID: {self.email_server_id}, "
+            f"Email address: {self.email_address}, Email password: {self.email_password}"
+        )

@@ -1,7 +1,10 @@
+from dataclasses import dataclass
 from enum import Enum
 from mailparser import MailParser
 from pydantic import BaseModel, EmailStr, SecretStr
 from typing import Optional
+from app.entities import base
+from app.services.cryptography.cryptographer import EmailCryptographer
 
 
 class EmailUser(BaseModel):
@@ -121,3 +124,50 @@ def get_server_by_id(id_: str) -> EmailServer:
         if server.value.id_ == id_:
             return server.value
     raise ValueError(f"Email server with id '{id_}' not found")
+
+
+@dataclass(frozen=True, slots=True)
+class EmailBox(base.ModelWithDBMixin):
+
+    owner_id: int
+    forum_id: int
+    last_handled_email_id: int
+    is_active: bool
+    db_id: Optional[int] = None
+
+
+@dataclass(frozen=True, slots=True)
+class DecryptedEmailAuthData(base.DecryptedModel):
+
+    emailbox_id: int
+    email_server: EmailServer
+    email_auth_data: EmailAuthData
+
+    def encrypt(self) -> "EncryptedEmailAuthData":
+        crypto = EmailCryptographer()
+        return EncryptedEmailAuthData(
+            emailbox_id=self.emailbox_id,
+            email_server_id=crypto.encrypt_key(content=self.email_server.id_),
+            email_address=crypto.encrypt_key(content=str(self.email_auth_data.email)),
+            email_password=crypto.encrypt_key(content=self.email_auth_data.password.get_secret_value()),
+        )
+
+
+@dataclass(frozen=True, slots=True)
+class EncryptedEmailAuthData(base.EncryptedModel):
+
+    emailbox_id: int
+    email_server_id: bytes
+    email_address: bytes
+    email_password: bytes
+
+    def decrypt(self) -> "DecryptedEmailAuthData":
+        crypto = EmailCryptographer()
+        return DecryptedEmailAuthData(
+            emailbox_id=self.emailbox_id,
+            email_server=get_server_by_id(id_=crypto.decrypt_key(code=self.email_server_id)),
+            email_auth_data=EmailAuthData(
+                email=crypto.decrypt_key(code=self.email_address),
+                password=SecretStr(crypto.decrypt_key(code=self.email_password)),
+            ),
+        )
