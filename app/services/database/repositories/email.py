@@ -10,7 +10,7 @@ from app.entities.email import EmailBox, DecryptedEmailAuthData, EncryptedEmailA
 class EmailRepo:
     """Implements repository for email entity"""
 
-    def __init__(self, session: AsyncSession):
+    def __init__(self, session: AsyncSession) -> None:
         self._session = session
 
     async def add_emailbox(self, emailbox: EmailBox, auth_data: DecryptedEmailAuthData) -> None:

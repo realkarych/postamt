@@ -12,10 +12,10 @@ from app.entities.user import User
 class UserRepo:
     """Implements repository for user entity"""
 
-    def __init__(self, session: AsyncSession):
+    def __init__(self, session: AsyncSession) -> None:
         self._session = session
 
-    async def add_user(self, user: User, force_merge: bool = False):
+    async def add_user(self, user: User, force_merge: bool = False) -> None:
         """
         Adds user to the database
         :param force_merge: If True, will merge (force update, rewrite) user into the database
