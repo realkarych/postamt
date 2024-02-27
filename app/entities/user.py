@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from aiogram import types
 from typing import Optional
+from datetime import datetime
 
 from app.entities import base
 
@@ -11,8 +12,9 @@ class User(base.ModelWithDBMixin):
 
     id_: int  # Telegram user id
     username: Optional[str] = None  # Telegram username
-    first_name: Optional[str] = None  # Telegram first name
-    last_name: Optional[str] = None  # Telegram last name
+    firstname: Optional[str] = None  # Telegram first name
+    lastname: Optional[str] = None  # Telegram last name
+    registered_date: Optional[datetime] = None  # Date of registration
 
     @classmethod
     def from_message(cls, message: types.Message) -> "User":
@@ -22,6 +24,6 @@ class User(base.ModelWithDBMixin):
         return cls(
             id_=message.from_user.id,
             username=message.from_user.username,
-            first_name=message.from_user.first_name,
-            last_name=message.from_user.last_name,
+            firstname=message.from_user.first_name,
+            lastname=message.from_user.last_name,
         )

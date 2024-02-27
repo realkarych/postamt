@@ -27,7 +27,7 @@ async def cmd_start(m: types.Message, session: AsyncSession, state: FSMContext) 
 
     user = User.from_message(message=m)
 
-    await m.answer(text=_("<b>Hello, {first_name}!</b>").format(first_name=user.first_name))
+    await m.answer(text=_("<b>Hello, {firstname}!</b>").format(firstname=user.firstname))
     async with ImapSession(
         server=EmailServers.YANDEX,
         auth_data=EmailAuthData(
