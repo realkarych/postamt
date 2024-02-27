@@ -12,7 +12,7 @@
 
 - **Web3 url:** https://postamt_robot.t.me
 - **Classic url:** https://t.me/postamt_robot
-- **In Telegram:** @postamt_robot
+- **In Telegram:** `@postamt_robot`
 
 ## 🚀 Features
 
