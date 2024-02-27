@@ -8,28 +8,31 @@ from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.utils.i18n import I18n, SimpleI18nMiddleware
 
 from app.core.handlers import factory
-from app.core.handlers.private_chat import base
+from app.core.handlers.private_chat import base as base_handlers
+from app.core.handlers import error as error_handlers
 from app.core.middlewares.db import DbSessionMiddleware
-from app.core.navigations.command import set_bot_commands
+from app.core.commands.command import set_bot_commands
 from app.services.database.connector import setup_get_pool
-from app.settings import paths
-from app.settings.config import load_config
+from app.utils import paths
+from app.utils.config import config
 
 
 async def main() -> None:
-    """Starts app & polling."""
-
-    config = load_config()
+    """Run app"""
 
     logging.basicConfig(
-        level=logging.DEBUG,
-        format="%(asctime)s - %(levelname)s - %(name)s - %(message)s"
+        level=config.APP_LOGGING_LEVEL,
+        format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
     )
 
-    bot = Bot(config.bot.token, parse_mode=config.bot.parse_mode)
+    bot = Bot(config.BOT_TOKEN, parse_mode="HTML")
     dp = Dispatcher(bot=bot, storage=MemoryStorage())
-    i18n = I18n(path=str(paths.LOCALES_DIR), default_locale=config.bot.default_locale, domain="bot")
-    session_pool = await setup_get_pool(db_uri=config.db.get_uri())  # type: ignore
+    i18n = I18n(
+        path=str(paths.LOCALES_DIR),
+        default_locale=config.BOT_DEFAULT_LOCALE,
+        domain="bot",
+    )
+    session_pool = await setup_get_pool(db_uri=config.build_postgres_dsn())
 
     dp.message.middleware(SimpleI18nMiddleware(i18n))
     dp.callback_query.middleware(SimpleI18nMiddleware(i18n))
@@ -39,7 +42,11 @@ async def main() -> None:
     dp.edited_message.middleware(DbSessionMiddleware(session_pool))
 
     # Provide your handlers here:
-    factory.register(dp, base, )
+    factory.register(
+        dp,
+        error_handlers,
+        base_handlers,
+    )
 
     await set_bot_commands(bot=bot)
 
@@ -54,5 +61,4 @@ if __name__ == "__main__":
     try:
         asyncio.run(main())
     except (KeyboardInterrupt, SystemExit):
-        # Logging this is pointless
         pass

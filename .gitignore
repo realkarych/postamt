@@ -1,6 +1,7 @@
 /.vscode
 /.idea
 /.DS_Store
+.DS_Store
 /__pycache__
 *.pyc
 *.pyo
@@ -26,16 +27,11 @@ pip-delete-this-directory.txt
 .cache
 nosetests.xml
 coverage.xml
-*.mo
 .mr.developer.cfg
 .project
 .pydevproject
 .ropeproject
 *.log
-*.pot
 docs/_build/
-poetry.lock
-.DS_Store
-.idea
-app.ini
+.env
 alembic.ini

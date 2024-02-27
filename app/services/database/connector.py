@@ -10,10 +10,7 @@ async def setup_get_pool(db_uri: str) -> async_sessionmaker:
     :return sessionmaker: provides to bot instance to manage sessions.
     """
 
-    engine = create_async_engine(
-        db_uri,
-        future=True
-    )
+    engine = create_async_engine(db_uri, future=True)
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
