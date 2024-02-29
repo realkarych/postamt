@@ -1,6 +1,6 @@
-from cryptography.fernet import Fernet
 from abc import ABCMeta, abstractmethod
-from app.utils.config import FERNET_KEYS_ENCODING, config
+from app.utils.config.consts import FERNET_KEYS_ENCODING
+from cryptography.fernet import Fernet
 
 
 def _encrypt_key(content: str, fernet_key: bytes) -> bytes:
@@ -17,7 +17,7 @@ def _decrypt_key(code: bytes, fernet_key: bytes) -> str:
     return token.decode(FERNET_KEYS_ENCODING)
 
 
-class Cryptographer(metaclass=ABCMeta):
+class ICryptographer(metaclass=ABCMeta):
     """Abstract class for cryptography"""
 
     @abstractmethod
@@ -31,12 +31,12 @@ class Cryptographer(metaclass=ABCMeta):
         raise NotImplementedError
 
 
-class EmailCryptographer(Cryptographer):
-    """Cryptography for email"""
+class Cryptographer(ICryptographer):
+    """Cryptography implementation"""
 
-    def __init__(self) -> None:
+    def __init__(self, fernet_key: bytes) -> None:
         """Initializes fernet key from config"""
-        self._fernet_key = config.EMAIL_FERNET_KEY
+        self._fernet_key = fernet_key
 
     def encrypt_key(self, content: str) -> bytes:
         """Encrypts content with fernet key"""
@@ -45,3 +45,19 @@ class EmailCryptographer(Cryptographer):
     def decrypt_key(self, code: bytes) -> str:
         """Decrypts token with fernet key"""
         return _decrypt_key(code, self._fernet_key)
+
+
+class EmailCryptographer(Cryptographer):
+    """Email cryptography implementation"""
+
+    def __init__(self, fernet_key: bytes) -> None:
+        """Initializes fernet key from config"""
+        super().__init__(fernet_key)
+
+
+class TopicCryptographer(Cryptographer):
+    """Topic cryptography implementation"""
+
+    def __init__(self, fernet_key: bytes) -> None:
+        """Initializes fernet key from config"""
+        super().__init__(fernet_key)

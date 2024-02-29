@@ -5,6 +5,7 @@ from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from app.exceptions.repo import DBError, ModelExists
 from app.models.email import EmailBox as DBEmailBox, EmailAuthData as DBEmailAuthData
 from app.entities.email import EmailBox, DecryptedEmailAuthData, EncryptedEmailAuthData
+from app.services.cryptography.cryptographer import EmailCryptographer
 
 
 class EmailRepo:
@@ -30,7 +31,9 @@ class EmailRepo:
                 await self._session.rollback()
                 raise DBError("Failed to add emailbox to the database") from e
 
-    async def get_emailbox(self, emailbox_id: int) -> Optional[tuple[EmailBox, DecryptedEmailAuthData]]:
+    async def get_emailbox(
+        self, crypto: EmailCryptographer, emailbox_id: int
+    ) -> Optional[tuple[EmailBox, DecryptedEmailAuthData]]:
         """Gets email box from the database"""
         try:
             query = (
@@ -49,7 +52,7 @@ class EmailRepo:
                 raise DBError("Failed to get emailbox auth data from the database")
 
             emailbox = _convert_db_emailbox_to_emailbox(db_emailbox)
-            auth_data = _convert_db_auth_data_to_auth_data(db_auth_data)
+            auth_data = _convert_db_auth_data_to_auth_data(crypto, db_auth_data)
             return emailbox, auth_data.decrypt()
         except SQLAlchemyError as e:
             raise DBError("Failed to get emailbox from the database") from e
@@ -84,8 +87,11 @@ def _convert_auth_data_to_db_auth_data(auth_data: EncryptedEmailAuthData) -> DBE
     )
 
 
-def _convert_db_auth_data_to_auth_data(db_auth_data: DBEmailAuthData) -> EncryptedEmailAuthData:
+def _convert_db_auth_data_to_auth_data(
+    crypto: EmailCryptographer, db_auth_data: DBEmailAuthData
+) -> EncryptedEmailAuthData:
     return EncryptedEmailAuthData(
+        _crypto=crypto,
         emailbox_id=int(str(db_auth_data.emailbox_id)),
         email_server_id=bytes(db_auth_data.email_server_id),  # type: ignore
         email_address=bytes(db_auth_data.email_address),  # type: ignore
