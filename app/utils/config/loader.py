@@ -1,7 +1,7 @@
 """
 Loads config.
-WARNING: Do not import this module anywhere (exclude entry-point — __main__.py). 
-Provide config settings via middlewares.
+WARNING: Do not import this module anywhere (exclude entry-point — __main__.py).
+Provide needed config setting via separated middleware.
 """
 
 from app.utils import paths
