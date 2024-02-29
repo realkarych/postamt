@@ -30,7 +30,7 @@ async def main() -> None:
     bot = Bot(
         token=configloader.bot_config.token,
         default=DefaultBotProperties(parse_mode="HTML"),
-        )
+    )
     await set_bot_commands(bot=bot)
 
     dp = Dispatcher(bot=bot, storage=MemoryStorage())
@@ -51,13 +51,13 @@ async def main() -> None:
     dp.callback_query.middleware(DbSessionMiddleware(session_pool))
     dp.edited_message.middleware(DbSessionMiddleware(session_pool))
 
-    # ------------ Provide your handlers here: ------------
+    # ------------ Provide your handler-modules here: ------------
     factory.register(
         dp,
         error_handlers,
         base_handlers,
     )
-    # -----------------------------------------------------
+    # ------------------------------------------------------------
 
     try:
         await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
