@@ -16,12 +16,12 @@ class TopicRepo:
     def __init__(self, session: AsyncSession) -> None:
         self._session = session
 
-    async def add_topic(self, topic: DecryptedTopic, force_merge: bool = False) -> None:
+    async def add_topic(self, topic: DecryptedTopic, update_when_exists: bool = False) -> None:
         """Adds topic to database"""
         async with self._session.begin():
             try:
                 db_topic = _convert_topic_to_db_topic(topic.encrypt())
-                if force_merge:
+                if update_when_exists:
                     logging.info("Merging topic: %s", db_topic)
                     await self._session.merge(db_topic)
                 else:

@@ -15,15 +15,15 @@ class UserRepo:
     def __init__(self, session: AsyncSession) -> None:
         self._session = session
 
-    async def add_user(self, user: User, force_merge: bool = False) -> None:
+    async def add_user(self, user: User, update_when_exists: bool = False) -> None:
         """
         Adds user to the database
-        :param force_merge: If True, will merge (force update, rewrite) user into the database
+        :param update_when_exists: If True, will merge (force update, rewrite) user into the database
         """
-        async with self._session.begin():
+        async with self._session.begin_nested():
             try:
                 db_user = _convert_user_to_db_user(user)
-                if force_merge:
+                if update_when_exists:
                     logging.info("Merging user: %s", db_user)
                     await self._session.merge(db_user)
                 else:
@@ -64,5 +64,5 @@ def _convert_db_user_to_user(db_user: DBUser) -> User:
         username=str(db_user.username) if db_user.username else None,  # pyright: ignore
         firstname=str(db_user.firstname) if db_user.firstname else None,  # pyright: ignore
         lastname=str(db_user.lastname) if db_user.lastname else None,  # pyright: ignore
-        registered_date=db_user.registered_date if db_user.registered_date is not None else None,  # pyright: ignore
+        registered_date=db_user.registered_date if db_user.registered_date else None,  # pyright: ignore
     )

@@ -10,12 +10,19 @@ from app.core.filters.chat_type import ChatTypeFilter
 from app.core.commands.command import PrivateChatCommands
 from app.core.keyboards import reply
 from app.entities.user import User
+from app.services.database.repositories.user import UserRepo
+
+import logging
 
 
 async def cmd_start(m: types.Message, session: AsyncSession, state: FSMContext) -> None:
     await state.clear()
 
     user = User.from_message(message=m)
+
+    repo = UserRepo(session=session)
+    logging.info(await repo.get_user(user.id_))
+    await repo.add_user(user=user, update_when_exists=True)
 
     await m.answer(
         text=_(
