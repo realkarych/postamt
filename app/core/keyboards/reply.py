@@ -17,7 +17,7 @@ def base_menu() -> ResizedReplyKeyboard:
     return ResizedReplyKeyboard(
         keyboard=[
             [
-                KeyboardButton(text=_("💌 Add Email")),
+                KeyboardButton(text=_("💌 Add Emailbox")),
             ]
         ]
     )

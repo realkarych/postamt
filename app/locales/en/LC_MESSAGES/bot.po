@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-03-01 17:41+0300\n"
+"POT-Creation-Date: 2024-03-02 02:09+0300\n"
 "PO-Revision-Date: 2024-01-30 19:51+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -18,28 +18,28 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.14.0\n"
 
-#: core/handlers/private_chat/base_commands.py:20
+#: core/handlers/private_chat/base_commands.py:21
 msgid ""
 "👋 <b>Hello, {firstname}!</b>\n"
 "\n"
 "POSTAMT is an Email client powered by Forums and WebApps.\n"
 "\n"
-"To use bot, follow @postamt_channel. We'll use it to let you know about "
-"important changes in the project.\n"
+"To use bot, follow {channel_username}. We'll use it to let you know about"
+" important changes in the project.\n"
 "<i>The bot, in turn, will never send advertising or service "
 "notifications.</i>"
 msgstr ""
 
-#: core/handlers/private_chat/base_commands.py:33
+#: core/handlers/private_chat/base_commands.py:34
 msgid ""
 "- If you have trouble setting up the Bot or you found a bug, write to "
-"@postamt_chat. Priority language is english.\n"
+"{group_username}. Priority language is english.\n"
 "- If you want to contribute to Bot, check the <a "
-"href=\"https://github.com/realkarych/postamt\">repository</a>."
+"href=\"{repo_link}\">repository</a>."
 msgstr ""
 
-#: core/keyboards/reply.py:21
-msgid "💌 Add Email"
+#: core/keyboards/reply.py:20
+msgid "💌 Add Emailbox"
 msgstr ""
 
 #~ msgid "<b>Hello, {first_name}!</b>"
@@ -71,5 +71,31 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "⨭ Add Email ⨮"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "👋 <b>Hello, {firstname}!</b>\n"
+#~ "\n"
+#~ "POSTAMT is an Email client powered by Forums and WebApps.\n"
+#~ "\n"
+#~ "To use bot, follow @postamt_channel. "
+#~ "We'll use it to let you know "
+#~ "about important changes in the project."
+#~ "\n"
+#~ "<i>The bot, in turn, will never "
+#~ "send advertising or service notifications.</i>"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "- If you have trouble setting up"
+#~ " the Bot or you found a bug,"
+#~ " write to @postamt_chat. Priority language"
+#~ " is english.\n"
+#~ "- If you want to contribute to "
+#~ "Bot, check the <a "
+#~ "href=\"https://github.com/realkarych/postamt\">repository</a>."
+#~ msgstr ""
+
+#~ msgid "💌 Add Email"
 #~ msgstr ""
 
