@@ -9,7 +9,7 @@ from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.utils.i18n import I18n, SimpleI18nMiddleware
 
 from app.core.handlers import factory
-from app.core.handlers.private_chat import base as base_handlers
+from app.core.handlers.private_chat import base_commands as base_handlers
 from app.core.handlers import error as error_handlers
 from app.core.middlewares.db import DbSessionMiddleware
 from app.core.middlewares.fernet_keys import FernetKeysMiddleware
