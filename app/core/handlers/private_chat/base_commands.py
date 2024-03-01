@@ -19,11 +19,11 @@ async def cmd_start(m: types.Message, session: AsyncSession, state: FSMContext) 
 
     await m.answer(
         text=_(
-            '👋 <b>Hello, {firstname}!</b>\n\n'
-            'POSTAMT is an Email client powered by Forums and WebApps.\n\n'
-            'To use bot, follow {channel_username}. We\'ll use it to let you '
-            'know about important changes in the project.\n<i>The bot, in turn, '
-            'will never send advertising or service notifications.</i>'
+            "👋 <b>Hello, {firstname}!</b>\n\n"
+            "POSTAMT is an Email client powered by Forums and WebApps.\n\n"
+            "To use bot, follow {channel_username}. We'll use it to let you "
+            "know about important changes in the project.\n<i>The bot, in turn, "
+            "will never send advertising or service notifications.</i>"
         ).format(firstname=user.firstname, channel_username=consts.CHANNEL_USERNAME),
         reply_markup=reply.base_menu(),
     )
@@ -32,8 +32,8 @@ async def cmd_start(m: types.Message, session: AsyncSession, state: FSMContext) 
 async def cmd_help(m: types.Message, session: AsyncSession, state: FSMContext) -> None:
     await m.answer(
         text=_(
-            '- If you have trouble setting up the Bot or you found a bug, '
-            'write to {group_username}. Priority language is english.\n'
+            "- If you have trouble setting up the Bot or you found a bug, "
+            "write to {group_username}. Priority language is english.\n"
             '- If you want to contribute to Bot, check the <a href="{repo_link}">repository</a>.'
         ).format(group_username=consts.GROUP_USERNAME, repo_link=consts.REPO_LINK)
     )
