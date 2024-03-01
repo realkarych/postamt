@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.filters.chat_type import ChatTypeFilter
 from app.core.commands.command import PrivateChatCommands
+from app.core.keyboards import reply
 from app.entities.user import User
 
 
@@ -19,10 +20,11 @@ async def cmd_start(m: types.Message, session: AsyncSession, state: FSMContext) 
         text=_(
             "👋 <b>Hello, {firstname}!</b>\n\n"
             "POSTAMT is an Email client powered by Forums and WebApps.\n\n"
-            "To use bot, follow @postamt_channel. I'll use it to let you "
-            "know about important changes in the project. <i>The bot, in turn, "
+            "To use bot, follow @postamt_channel. We'll use it to let you "
+            "know about important changes in the project.\n<i>The bot, in turn, "
             "will never send advertising or service notifications.</i>"
-        ).format(firstname=user.firstname)
+        ).format(firstname=user.firstname),
+        reply_markup=reply.base_menu(),
     )
 
 
