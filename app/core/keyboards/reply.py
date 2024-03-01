@@ -4,7 +4,7 @@ from aiogram.utils.i18n import gettext as _
 
 class ResizedReplyKeyboard(ReplyKeyboardMarkup):
     """
-    I (@Karych) prefer override default ReplyKeyboardMarkup to avoid passing 
+    I (@Karych) prefer override default ReplyKeyboardMarkup to avoid passing
     the resizer parameter every time.
     """
 
@@ -17,9 +17,7 @@ def base_menu() -> ResizedReplyKeyboard:
     return ResizedReplyKeyboard(
         keyboard=[
             [
-                KeyboardButton(
-                    text=_("💌 Add Email")
-                ),
+                KeyboardButton(text=_("💌 Add Email")),
             ]
         ]
     )

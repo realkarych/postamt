@@ -34,7 +34,7 @@ async def cmd_help(m: types.Message, session: AsyncSession, state: FSMContext) -
             "- If you have trouble setting up the Bot or you found a bug, "
             "write to @postamt_chat. Priority language is english.\n"
             "- If you want to contribute to Bot, check the "
-            "<a href=\"https://github.com/realkarych/postamt\">repository</a>."
+            '<a href="https://github.com/realkarych/postamt">repository</a>.'
         )
     )
 
