@@ -20,22 +20,19 @@ class UserRepo:
         Adds user to the database
         :param update_when_exists: If True, will merge (force update, rewrite) user into the database
         """
-        async with self._session.begin_nested():
-            try:
-                db_user = _convert_user_to_db_user(user)
-                if update_when_exists:
-                    logging.info("Merging user: %s", db_user)
-                    await self._session.merge(db_user)
-                else:
-                    self._session.add(db_user)
-                await self._session.flush()
+        try:
+            db_user = _convert_user_to_db_user(user)
+            if update_when_exists:
+                logging.info("Merging user: %s", db_user)
+                await self._session.merge(db_user)
+            else:
+                self._session.add(db_user)
+            await self._session.commit()
 
-            except IntegrityError as e:
-                await self._session.rollback()
-                raise ModelExists("Failed to add user to the database") from e
-            except SQLAlchemyError as e:
-                await self._session.rollback()
-                raise DBError("Failed to add user to the database") from e
+        except IntegrityError as e:
+            raise ModelExists("Failed to add user to the database") from e
+        except SQLAlchemyError as e:
+            raise DBError("Failed to add user to the database") from e
 
     async def get_user(self, user_id: int) -> Optional[User]:
         """Gets user from the database"""
