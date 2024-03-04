@@ -5,6 +5,7 @@ from pydantic import BaseModel, EmailStr, SecretStr
 from typing import Optional
 from app.entities import base
 from app.services.cryptography.cryptographer import EmailCryptographer
+from aiogram.filters.callback_data import CallbackData
 
 
 class EmailUser(BaseModel):
@@ -175,3 +176,8 @@ class EncryptedEmailAuthData(base.EncryptedModel):
                 password=SecretStr(self._crypto.decrypt_key(code=self.email_password)),
             ),
         )
+
+
+class EmailServerCallbackFactory(CallbackData, prefix="email_server"):
+
+    server: EmailServer

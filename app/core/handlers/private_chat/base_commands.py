@@ -9,6 +9,7 @@ from app import consts
 from app.core.filters.chat_type import ChatTypeFilter
 from app.core.commands.command import PrivateChatCommands
 from app.core.keyboards import reply
+from app.core.states import base_menu
 from app.entities.user import User
 from app.services.database.repositories.user import UserRepo
 
@@ -21,8 +22,18 @@ async def cmd_start(m: types.Message, session: AsyncSession, state: FSMContext) 
     user = User.from_message(message=m)
 
     repo = UserRepo(session=session)
-    logging.info(await repo.get_user(user.id_))
-    await repo.add_user(user=user, update_when_exists=True)
+
+    try:
+        await repo.add_user(user=user, update_when_exists=True)
+    except Exception as e:
+        logging.error(e)
+        await m.answer(
+            text=_(
+                "😔 Sorry, but an error occurred while processing your request. "
+                "Please try again later.\nIf the problem persists, write to {group_username}."
+            ).format(group_username=consts.GROUP_USERNAME)
+        )
+        return
 
     await m.answer(
         text=_(
@@ -34,9 +45,10 @@ async def cmd_start(m: types.Message, session: AsyncSession, state: FSMContext) 
         ).format(firstname=user.firstname, channel_username=consts.CHANNEL_USERNAME),
         reply_markup=reply.base_menu(),
     )
+    await state.set_state(state=base_menu.BaseMenu.register_email)
 
 
-async def cmd_help(m: types.Message, session: AsyncSession, state: FSMContext) -> None:
+async def cmd_help(m: types.Message) -> None:
     await m.answer(
         text=_(
             "- If you have trouble setting up the Bot or you found a bug, "
@@ -56,7 +68,9 @@ def register() -> Router:
     )
 
     router.message.register(
-        cmd_help, ChatTypeFilter(chat_type=ChatType.PRIVATE), Command(str(PrivateChatCommands.help))
+        cmd_help,
+        ChatTypeFilter(chat_type=ChatType.PRIVATE),
+        Command(str(PrivateChatCommands.help)),
     )
 
     return router
