@@ -180,4 +180,4 @@ class EncryptedEmailAuthData(base.EncryptedModel):
 
 class EmailServerCallbackFactory(CallbackData, prefix="email_server"):
 
-    server: EmailServer
+    server_id: str
