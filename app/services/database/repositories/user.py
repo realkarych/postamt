@@ -50,8 +50,7 @@ def _convert_user_to_db_user(user: User) -> DBUser:
         id=user.id_,
         username=user.username,
         firstname=user.firstname,
-        lastname=user.lastname,
-        registered_date=user.registered_date,
+        lastname=user.lastname
     )
 
 
