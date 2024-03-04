@@ -27,11 +27,11 @@ async def btn_select_email_server(
     await c.message.answer(
         text=_(
             "🏤 <i>Email server:</i> {email_server_title}\n"
-            "📬 <i>Email address:</i> ---\n"
-            "🗝️ <i>Email access key:</i> ---\n\n"
-            "<b>Now, enter your Email address:</b>"
-            .format(email_server_title=email_server.title)
-        ), reply_markup=reply.email_reg_pipeline_menu()
+            "📬 <i>Email address:</i> ____\n"
+            "🗝️ <i>Email access key:</i> ____\n\n"
+            "<b>Now, enter your Email address:</b>".format(email_server_title=email_server.title)
+        ),
+        reply_markup=reply.email_reg_pipeline_menu(),
     )
 
 

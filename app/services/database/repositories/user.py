@@ -46,12 +46,7 @@ class UserRepo:
 
 
 def _convert_user_to_db_user(user: User) -> DBUser:
-    return DBUser(
-        id=user.id_,
-        username=user.username,
-        firstname=user.firstname,
-        lastname=user.lastname
-    )
+    return DBUser(id=user.id_, username=user.username, firstname=user.firstname, lastname=user.lastname)
 
 
 def _convert_db_user_to_user(db_user: DBUser) -> User:
