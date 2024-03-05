@@ -108,6 +108,7 @@ async def handle_entered_password(m: types.Message, session: AsyncSession, state
                 email_password=state_data.get(str(_EmailDataIds.password)),
             ),
         )
+        await state.update_data({str(_EmailDataIds.password): password})
 
     else:
         await m.answer(
