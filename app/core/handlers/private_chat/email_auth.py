@@ -10,10 +10,23 @@ from app.core.filters.chat_type import ChatTypeFilter
 from app.core.keyboards import inline, reply
 from app.core.states import base_menu, email_register
 from app.entities import email as email_entities
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.services.email.imap.repository import ImapRepository
 from app.services.email.imap.session import ImapSession
 from app.exceptions.email import ImapConnectionFailed
+
+from enum import Enum
+
+
+class _EmailDataIds(str, Enum):
+    server = "email_server"
+    msg = "email_msg_id"
+    address = "email_address"
+    password = "email_password"
+
+    def __str__(self) -> str:
+        return self.value
 
 
 async def btn_add_email(m: types.Message, state: FSMContext) -> None:
@@ -36,7 +49,10 @@ async def btn_select_email_server(
             "<b>Now, enter your Email address:</b>".format(email_server_title=email_server.value.title)
         ),
     )
-    await state.update_data(data={"email_server": email_server, "email_msg_id": c.message.message_id})
+    await state.update_data(data={
+        str(_EmailDataIds.server): email_server,
+        str(_EmailDataIds.msg): c.message.message_id
+    })
 
 
 async def handle_entered_email(m: types.Message, state: FSMContext) -> None:
@@ -50,49 +66,61 @@ async def handle_entered_email(m: types.Message, state: FSMContext) -> None:
         )
         return
     await state.set_state(state=email_register.EmailRegister.password)
-    await state.update_data(data={"email_address": email_str})
+    await state.update_data(data={str(_EmailDataIds.address): email_str})
     msg = await _edit_or_create_msg(
         message=m,
-        to_edit_msg_id=(await state.get_data()).get("email_msg_id"),
+        to_edit_msg_id=(await state.get_data()).get(str(_EmailDataIds.msg)),
         text=_(
             "🏤 <i>Email server:</i> {email_server_title}\n"
             "📬 <i>Email address:</i> {email_address}\n"
             "🗝️ <i>Email access key:</i> ____\n\n"
-            "<b>Now, enter your Email access key:</b>"
-        ).format(email_server_title=(await state.get_data()).get("email_server").value.title, email_address=email_str),
+            "<b>1.</b> Setup IMAP/SMTP on your Email account and generate access key "
+            '(follow <a href="https://blog.karych.ru/postamt-setup">the guideline</a>).\n'
+            "<b>2. Enter access key:</b>"
+        ).format(
+            email_server_title=(await state.get_data()).get(str(_EmailDataIds.server)).value.title,
+            email_address=email_str,
+        ),
+        disable_web_page_preview=False,
     )
-    await state.update_data(data={"email_msg_id": msg.message_id})
+    await state.update_data(data={str(_EmailDataIds.msg): msg.message_id})
 
 
-async def handle_entered_password(m: types.Message, state: FSMContext) -> None:
+async def handle_entered_password(m: types.Message, session: AsyncSession, state: FSMContext) -> None:
     await m.delete()
     password = m.text.strip()
     state_data = await state.get_data()
-    if await can_estabilish_connection(
-        email_server=state_data.get("email_server"),
-        email_address=state_data.get("email_address"),
+    if await _can_estabilish_connection(
+        email_server=state_data.get(str(_EmailDataIds.server)),
+        email_address=state_data.get(str(_EmailDataIds.address)),
         email_password=password,
     ):
         await _edit_or_create_msg(
             message=m,
-            to_edit_msg_id=state_data.get("email_msg_id"),
+            to_edit_msg_id=state_data.get(str(_EmailDataIds.msg)),
             text=_(
                 "🏤 <i>Email server:</i> {email_server_title}\n"
                 "📬 <i>Email address:</i> {email_address}\n"
-                "🗝️ <i>Email access key:</i> {}\n\n"
+                '🗝️ <i>Email access key:</i> <span class="tg-spoiler">{email_password}</span>\n\n'
                 "🎉 <b>Congrats, Email connected!</b>"
+            ).format(
+                email_server_title=state_data.get(str(_EmailDataIds.server)).value.title,
+                email_address=state_data.get(str(_EmailDataIds.address)),
+                email_password=state_data.get(str(_EmailDataIds.password))
             ),
         )
 
     else:
         await m.answer(
-            text=_("❌ Invalid email access key: {email_password}!\n\n<b>Try again:</b>").format(
-                email_password=password
+            text=_(
+                '❌ Invalid email access key: <span class="tg-spoiler">{email_password}</span>!\n\n<b>Try again:</b>'
+            ).format(
+                email_password=password,
             )
         )
 
 
-async def can_estabilish_connection(
+async def _can_estabilish_connection(
     email_server: email_entities.EmailServers, email_address: str, email_password: str
 ) -> bool:
     try:
