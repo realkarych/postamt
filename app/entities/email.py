@@ -119,11 +119,11 @@ class EmailServers(Enum):
         return str(self.value)
 
 
-def get_server_by_id(id_: str) -> EmailServer:
+def get_server_by_id(id_: str) -> EmailServers:
     """Returns email server by id"""
     for server in EmailServers:
         if server.value.id_ == id_:
-            return server.value
+            return server
     raise ValueError(f"Email server with id '{id_}' not found")
 
 
@@ -170,7 +170,7 @@ class EncryptedEmailAuthData(base.EncryptedModel):
         return DecryptedEmailAuthData(
             _crypto=self._crypto,
             emailbox_id=self.emailbox_id,
-            email_server=get_server_by_id(id_=self._crypto.decrypt_key(code=self.email_server_id)),
+            email_server=get_server_by_id(id_=self._crypto.decrypt_key(code=self.email_server_id)).value,
             email_auth_data=EmailAuthData(
                 email=self._crypto.decrypt_key(code=self.email_address),
                 password=SecretStr(self._crypto.decrypt_key(code=self.email_password)),
