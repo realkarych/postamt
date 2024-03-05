@@ -60,16 +60,15 @@ async def cmd_help(m: types.Message) -> None:
 
 def register() -> Router:
     router = Router()
+    router.message.filter(ChatTypeFilter(chat_type=ChatType.PRIVATE))
 
     router.message.register(
         cmd_start,
-        ChatTypeFilter(chat_type=ChatType.PRIVATE),
         Command(str(PrivateChatCommands.start)),
     )
 
     router.message.register(
         cmd_help,
-        ChatTypeFilter(chat_type=ChatType.PRIVATE),
         Command(str(PrivateChatCommands.help)),
     )
 
