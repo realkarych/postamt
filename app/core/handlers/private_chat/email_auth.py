@@ -49,10 +49,9 @@ async def btn_select_email_server(
             "<b>Now, enter your Email address:</b>".format(email_server_title=email_server.value.title)
         ),
     )
-    await state.update_data(data={
-        str(_EmailDataIds.server): email_server,
-        str(_EmailDataIds.msg): c.message.message_id
-    })
+    await state.update_data(
+        data={str(_EmailDataIds.server): email_server, str(_EmailDataIds.msg): c.message.message_id}
+    )
 
 
 async def handle_entered_email(m: types.Message, state: FSMContext) -> None:
@@ -106,7 +105,7 @@ async def handle_entered_password(m: types.Message, session: AsyncSession, state
             ).format(
                 email_server_title=state_data.get(str(_EmailDataIds.server)).value.title,
                 email_address=state_data.get(str(_EmailDataIds.address)),
-                email_password=state_data.get(str(_EmailDataIds.password))
+                email_password=state_data.get(str(_EmailDataIds.password)),
             ),
         )
 
