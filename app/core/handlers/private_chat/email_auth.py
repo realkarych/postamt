@@ -3,6 +3,7 @@
 from aiogram import F, types, Router, exceptions
 from aiogram.enums import ChatType
 from aiogram.fsm.context import FSMContext
+from aiogram.filters import StateFilter
 from aiogram.utils.i18n import gettext as _, lazy_gettext as __
 from pydantic import validate_email
 
@@ -126,6 +127,12 @@ async def btn_cancel_action(m: types.Message, state: FSMContext) -> None:
     await m.reply(text=_("<i>Cancelling...</i>"), reply_markup=reply.base_menu())
 
 
+async def back_to_server_selection(m: types.Message, state: FSMContext) -> None:
+    await state.clear()
+    await state.set_state(state=email_register_states.EmailRegister.server)
+    await m.answer(text=_("🏤 Choose your Email server:"), reply_markup=inline.email_servers_keyboard())
+
+
 async def _can_estabilish_connection(
     email_server: email_entities.EmailServers, email_address: str, email_password: str
 ) -> bool:
@@ -167,6 +174,23 @@ def register() -> Router:
 
     router.message.register(btn_cancel_action, F.text == __("🏠 Menu"))
 
+    router.message.register(
+        btn_cancel_action,
+        F.text == __("🔙 Previous step"),
+        StateFilter(
+            email_register_states.EmailRegister.server
+        )
+    )
+
+    router.message.register(
+        back_to_server_selection,
+        F.text == __("🔙 Previous step"),
+        StateFilter(
+            email_register_states.EmailRegister.email,
+            email_register_states.EmailRegister.password,
+        )
+    )
+
     router.callback_query.register(
         btn_select_email_server,
         email_entities.EmailServerCallbackFactory.filter(),
@@ -174,7 +198,9 @@ def register() -> Router:
 
     router.message.register(
         handle_entered_email,
-        email_register_states.EmailRegister.email,
+        StateFilter(
+            email_register_states.EmailRegister.email,
+        )
     )
 
     router.message.register(handle_entered_password, email_register_states.EmailRegister.password)
