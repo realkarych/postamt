@@ -43,9 +43,9 @@ async def btn_select_email_server(
     email_server = email_entities.get_server_by_id(callback_data.server_id)
     await c.message.edit_text(
         text=_(
-            "🏤 <i>Email server:</i> {email_server_title}\n"
-            "📬 <i>Email address:</i> ____\n"
-            "🗝️ <i>Email access key:</i> ____\n\n"
+            "🏤 Email server: <code>{email_server_title}</code>\n"
+            "📬 Email address: ____\n"
+            "🗝️ Email access key: ____\n\n"
             "<b>Now, enter your Email address:</b>".format(email_server_title=email_server.value.title)
         ),
     )
@@ -70,9 +70,9 @@ async def handle_entered_email(m: types.Message, state: FSMContext) -> None:
         message=m,
         to_edit_msg_id=(await state.get_data()).get(str(_EmailDataIds.msg)),
         text=_(
-            "🏤 <i>Email server:</i> {email_server_title}\n"
-            "📬 <i>Email address:</i> {email_address}\n"
-            "🗝️ <i>Email access key:</i> ____\n\n"
+            "🏤 Email server: <code>{email_server_title}</code>\n"
+            "📬 Email address: <code>{email_address}</code>\n"
+            "🗝️ Email access key: ____\n\n"
             "<b>1.</b> Setup IMAP/SMTP on your Email account and generate access key "
             '(follow <a href="https://blog.karych.ru/postamt-setup">the guideline</a>).\n'
             "<b>2.</b> Enter access key:"
@@ -98,9 +98,9 @@ async def handle_entered_password(m: types.Message, session: AsyncSession, state
             message=m,
             to_edit_msg_id=state_data.get(str(_EmailDataIds.msg)),
             text=_(
-                "🏤 <i>Email server:</i> {email_server_title}\n"
-                "📬 <i>Email address:</i> {email_address}\n"
-                '🗝️ <i>Email access key:</i> <span class="tg-spoiler">{email_password}</span>\n\n'
+                "🏤 Email server: <code>{email_server_title}</code>\n"
+                "📬 Email address: <code>{email_address}</code>\n"
+                '🗝️ Email access key: <span class="tg-spoiler">{email_password}</span>\n\n'
                 "🎉 <b>Congrats, Email connected!</b>"
             ).format(
                 email_server_title=state_data.get(str(_EmailDataIds.server)).value.title,
@@ -165,7 +165,7 @@ def register() -> Router:
         F.text == __("💌 Add Emailbox"),
     )
 
-    router.message.register(btn_cancel_action, F.text == __("❌ Cancel action"))
+    router.message.register(btn_cancel_action, F.text == __("🏠 Menu"))
 
     router.callback_query.register(
         btn_select_email_server,

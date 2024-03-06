@@ -27,8 +27,8 @@ def email_reg_pipeline_menu() -> ResizedReplyKeyboard:
     return ResizedReplyKeyboard(
         keyboard=[
             [
-                KeyboardButton(text=_("⮐ Previous step")),
-                KeyboardButton(text=_("❌ Cancel action")),
+                KeyboardButton(text=_("🔙 Previous step")),
+                KeyboardButton(text=_("🏠 Menu")),
             ]
         ]
     )
