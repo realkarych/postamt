@@ -56,6 +56,10 @@ async def cmd_help(m: types.Message) -> None:
     )
 
 
+async def unexpected_input(m: types.Message) -> None:
+    await m.reply(text=_("🤔 Unexpected input..."))
+
+
 def register() -> Router:
     router = Router()
     router.message.filter(ChatTypeFilter(chat_type=ChatType.PRIVATE))
@@ -68,6 +72,10 @@ def register() -> Router:
     router.message.register(
         cmd_help,
         Command(str(PrivateChatCommands.help)),
+    )
+
+    router.message.register(
+        unexpected_input,
     )
 
     return router

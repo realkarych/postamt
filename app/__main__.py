@@ -58,6 +58,7 @@ async def main() -> None:
         dp,
         error_handlers,
         email_auth_handlers,
+        # This module should be the last one, because it contains handler of unexpected messages
         base_handlers,
     )
     # ------------------------------------------------------------
