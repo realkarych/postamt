@@ -44,8 +44,7 @@ async def main() -> None:
     )
     session_pool = await setup_get_pool(db_uri=configloader.postgres_dsn)
 
-    dp.message.middleware(SimpleI18nMiddleware(i18n))
-    dp.callback_query.middleware(SimpleI18nMiddleware(i18n))
+    SimpleI18nMiddleware(i18n).setup(dp)
 
     dp.message.middleware(FernetKeysMiddleware(configloader.fernet_keys))
     dp.callback_query.middleware(FernetKeysMiddleware(configloader.fernet_keys))

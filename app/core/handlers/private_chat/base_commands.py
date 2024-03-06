@@ -9,7 +9,6 @@ from app import consts
 from app.core.filters.chat_type import ChatTypeFilter
 from app.core.commands.command import PrivateChatCommands
 from app.core.keyboards import reply
-from app.core.states import base_menu
 from app.entities.user import User
 from app.services.database.repositories.user import UserRepo
 
@@ -45,7 +44,6 @@ async def cmd_start(m: types.Message, session: AsyncSession, state: FSMContext) 
         ).format(firstname=user.firstname, channel_username=consts.CHANNEL_USERNAME),
         reply_markup=reply.base_menu(),
     )
-    await state.set_state(state=base_menu.BaseMenu.register_email)
 
 
 async def cmd_help(m: types.Message) -> None:
