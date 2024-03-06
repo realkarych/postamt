@@ -175,11 +175,7 @@ def register() -> Router:
     router.message.register(btn_cancel_action, F.text == __("🏠 Menu"))
 
     router.message.register(
-        btn_cancel_action,
-        F.text == __("🔙 Previous step"),
-        StateFilter(
-            email_register_states.EmailRegister.server
-        )
+        btn_cancel_action, F.text == __("🔙 Previous step"), StateFilter(email_register_states.EmailRegister.server)
     )
 
     router.message.register(
@@ -188,7 +184,7 @@ def register() -> Router:
         StateFilter(
             email_register_states.EmailRegister.email,
             email_register_states.EmailRegister.password,
-        )
+        ),
     )
 
     router.callback_query.register(
@@ -200,7 +196,7 @@ def register() -> Router:
         handle_entered_email,
         StateFilter(
             email_register_states.EmailRegister.email,
-        )
+        ),
     )
 
     router.message.register(handle_entered_password, email_register_states.EmailRegister.password)
