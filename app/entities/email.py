@@ -104,7 +104,7 @@ class EmailServers(Enum):
     )
     OFFICE365 = EmailServer(
         id_="office365",
-        title="Office365",
+        title="Office 365",
         imap=EmailServerData(host="outlook.office365.com", port=993),
         smtp=EmailServerData(host="smtp.office365.com", port=587),
     )
