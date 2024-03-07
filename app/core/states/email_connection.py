@@ -1,7 +1,7 @@
 from aiogram.fsm.state import State, StatesGroup
 
 
-class EmailRegister(StatesGroup):
+class EmailAcc(StatesGroup):
 
     server = State()
     email = State()

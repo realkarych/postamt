@@ -9,7 +9,7 @@ from pydantic import validate_email
 
 from app.core.filters.chat_type import ChatTypeFilter
 from app.core.keyboards import inline, reply
-from app.core.states import email_register as email_register_states
+from app.core.states import email_connection as email_states
 from app.entities import email as email_entities
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -31,7 +31,7 @@ class _EmailDataIds(str, Enum):
 
 
 async def btn_add_email(m: types.Message, state: FSMContext) -> None:
-    await state.set_state(state=email_register_states.EmailRegister.server)
+    await state.set_state(state=email_states.EmailAcc.server)
     await m.delete()
     await m.answer(text=_("<b>Let's connect your Email!</b>"), reply_markup=reply.email_reg_pipeline_menu())
     await m.answer(text=_("🏤 Choose your Email server:"), reply_markup=inline.email_servers_keyboard())
@@ -40,15 +40,15 @@ async def btn_add_email(m: types.Message, state: FSMContext) -> None:
 async def btn_select_email_server(
     c: types.CallbackQuery, state: FSMContext, callback_data: email_entities.EmailServerCallbackFactory
 ) -> None:
-    await state.set_state(state=email_register_states.EmailRegister.email)
+    await state.set_state(state=email_states.EmailAcc.email)
     email_server = email_entities.get_server_by_id(callback_data.server_id)
     await c.message.edit_text(
         text=_(
             "🏤 Email server: <code>{email_server_title}</code>\n"
             "📬 Email address: ____\n"
             "🗝️ Email access key: ____\n\n"
-            "<b>Now, enter your Email address:</b>".format(email_server_title=email_server.value.title)
-        ),
+            "<b>Now, enter your Email address:</b>"
+        ).format(email_server_title=email_server.value.title),
     )
     await state.update_data(
         data={str(_EmailDataIds.server): email_server, str(_EmailDataIds.msg): c.message.message_id}
@@ -65,7 +65,7 @@ async def handle_entered_email(m: types.Message, state: FSMContext) -> None:
             text=_("❌ Invalid email address: {email_str}!\n\n<b>Try again:</b>").format(email_str=email_str)
         )
         return
-    await state.set_state(state=email_register_states.EmailRegister.password)
+    await state.set_state(state=email_states.EmailAcc.password)
     await state.update_data(data={str(_EmailDataIds.address): email_str})
     msg = await _edit_or_create_msg(
         message=m,
@@ -114,7 +114,8 @@ async def handle_entered_password(m: types.Message, session: AsyncSession, state
     else:
         await m.answer(
             text=_(
-                '❌ Invalid email access key: <span class="tg-spoiler">{email_password}</span>!\n\n<b>Try again:</b>'
+                '❌ Invalid email access key: <span class="tg-spoiler">{email_password}</span>!\n\n'
+                "<b>Make sure you follow all the steps from guideline. Try again:</b>"
             ).format(
                 email_password=password,
             )
@@ -129,7 +130,7 @@ async def btn_cancel_action(m: types.Message, state: FSMContext) -> None:
 
 async def back_to_server_selection(m: types.Message, state: FSMContext) -> None:
     await state.clear()
-    await state.set_state(state=email_register_states.EmailRegister.server)
+    await state.set_state(state=email_states.EmailAcc.server)
     await m.answer(text=_("🏤 Choose your Email server:"), reply_markup=inline.email_servers_keyboard())
 
 
@@ -175,15 +176,15 @@ def register() -> Router:
     router.message.register(btn_cancel_action, F.text == __("🏠 Menu"))
 
     router.message.register(
-        btn_cancel_action, F.text == __("🔙 Previous step"), StateFilter(email_register_states.EmailRegister.server)
+        btn_cancel_action, F.text == __("🔙 Previous step"), StateFilter(email_states.EmailAcc.server)
     )
 
     router.message.register(
         back_to_server_selection,
         F.text == __("🔙 Previous step"),
         StateFilter(
-            email_register_states.EmailRegister.email,
-            email_register_states.EmailRegister.password,
+            email_states.EmailAcc.email,
+            email_states.EmailAcc.password,
         ),
     )
 
@@ -195,10 +196,10 @@ def register() -> Router:
     router.message.register(
         handle_entered_email,
         StateFilter(
-            email_register_states.EmailRegister.email,
+            email_states.EmailAcc.email,
         ),
     )
 
-    router.message.register(handle_entered_password, email_register_states.EmailRegister.password)
+    router.message.register(handle_entered_password, email_states.EmailAcc.password)
 
     return router
