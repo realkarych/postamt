@@ -4,7 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from app.exceptions.repo import DBError, ModelExists
 from app.models.email import EmailBox as DBEmailBox, EmailAuthData as DBEmailAuthData
-from app.entities.email import EmailBox, DecryptedEmailAuthData, EncryptedEmailAuthData
+from app.entities.email import EmailBox, EncryptedEmailAuthData
 from app.services.cryptography.cryptographer import EmailCryptographer
 
 
@@ -14,26 +14,27 @@ class EmailRepo:
     def __init__(self, session: AsyncSession) -> None:
         self._session = session
 
-    async def add_emailbox(self, emailbox: EmailBox, auth_data: DecryptedEmailAuthData) -> None:
-        """Adds email box to database"""
-        async with self._session.begin():
-            try:
-                db_emailbox = _convert_emailbox_to_db_emailbox(emailbox)
-                db_auth_data = _convert_auth_data_to_db_auth_data(auth_data.encrypt())
-                self._session.add(db_emailbox)
-                self._session.add(db_auth_data)
-                await self._session.flush()
+    async def add_auth_data(self, auth_data: EncryptedEmailAuthData) -> None:
+        try:
+            self._session.add(_convert_auth_data_to_db_auth_data(auth_data))
+            await self._session.commit()
+        except IntegrityError as e:
+            raise ModelExists("Email auth data already exists in the database") from e
+        except SQLAlchemyError as e:
+            raise DBError("Failed to add email auth data to the database") from e
 
-            except IntegrityError as e:
-                await self._session.rollback()
-                raise ModelExists("Failed to add emailbox to the database") from e
-            except SQLAlchemyError as e:
-                await self._session.rollback()
-                raise DBError("Failed to add emailbox to the database") from e
+    async def add_emailbox(self, emailbox: EmailBox) -> None:
+        try:
+            self._session.add(_convert_emailbox_to_db_emailbox(emailbox))
+            await self._session.commit()
+        except IntegrityError as e:
+            raise ModelExists("Emailbox exists in the database") from e
+        except SQLAlchemyError as e:
+            raise DBError("Failed to add Emailbox to the database") from e
 
     async def get_emailbox(
         self, crypto: EmailCryptographer, emailbox_id: int
-    ) -> Optional[tuple[EmailBox, DecryptedEmailAuthData]]:
+    ) -> Optional[tuple[EmailBox, EncryptedEmailAuthData]]:
         """Gets email box from the database"""
         try:
             query = (
@@ -53,7 +54,7 @@ class EmailRepo:
 
             emailbox = _convert_db_emailbox_to_emailbox(db_emailbox)
             auth_data = _convert_db_auth_data_to_auth_data(crypto, db_auth_data)
-            return emailbox, auth_data.decrypt()
+            return emailbox, auth_data
         except SQLAlchemyError as e:
             raise DBError("Failed to get emailbox from the database") from e
 

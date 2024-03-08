@@ -9,7 +9,7 @@ class EmailBox(Base):
 
     id = Column(BigInteger, primary_key=True, unique=True, autoincrement=True)
     owner_id = Column(BigInteger, nullable=False)
-    forum_id = Column(BigInteger, nullable=False)
+    forum_id = Column(BigInteger, nullable=True, default=None)
     last_handled_email_id = Column(BigInteger, nullable=False, default=0)
     is_active = Column(Boolean, default=True)
 
