@@ -17,9 +17,9 @@ class EmailRepo:
         db_emailbox = _convert_emailbox_to_db_emailbox(emailbox)
         try:
             if update_if_exists:
-                self._session.add(db_emailbox)
-            else:
                 await self._session.merge(db_emailbox)
+            else:
+                self._session.add(db_emailbox)
             await self._session.commit()
         except exc.IntegrityError as e:
             raise ModelExists("Adding model {model} failed".format(model=str(db_emailbox))) from e
