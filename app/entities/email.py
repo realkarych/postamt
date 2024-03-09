@@ -128,53 +128,56 @@ def get_server_by_id(id_: str) -> EmailServers:
 
 
 @dataclass(frozen=True, slots=True)
-class EmailBox(base.ModelWithDBMixin):
+class DecryptedEmailbox(base.DecryptedModel):
+
+    crypto: EmailCryptographer
 
     owner_id: int
-    forum_id: int
-    last_handled_email_id: int
-    is_active: bool
-    db_id: Optional[int] = None
+    server_id: str
+    address: EmailStr
+    password: str
+    forum_id: int | None = None
+    last_fetched_email_id: int | None = None
+    enabled: bool | None = None
+    db_id: int | None = None
 
-
-@dataclass(frozen=True, slots=True)
-class DecryptedEmailAuthData(base.DecryptedModel):
-
-    _crypto: EmailCryptographer
-
-    emailbox_id: int
-    email_server: EmailServer
-    email_auth_data: EmailAuthData
-
-    def encrypt(self) -> "EncryptedEmailAuthData":
-        return EncryptedEmailAuthData(
-            _crypto=self._crypto,
-            emailbox_id=self.emailbox_id,
-            email_server_id=self._crypto.encrypt_key(content=self.email_server.id_),
-            email_address=self._crypto.encrypt_key(content=str(self.email_auth_data.email)),
-            email_password=self._crypto.encrypt_key(content=self.email_auth_data.password.get_secret_value()),
+    def encrypt(self) -> "EncryptedEmailbox":
+        return EncryptedEmailbox(
+            crypto=self.crypto,
+            owner_id=self.owner_id,
+            server_id=self.crypto.encrypt_key(self.server_id),
+            address=self.crypto.encrypt_key(self.address),
+            password=self.crypto.encrypt_key(self.password),
+            forum_id=self.forum_id,
+            last_fetched_email_id=self.last_fetched_email_id,
+            enabled=self.enabled,
         )
 
 
 @dataclass(frozen=True, slots=True)
-class EncryptedEmailAuthData(base.EncryptedModel):
+class EncryptedEmailbox(base.EncryptedModel):
 
-    _crypto: EmailCryptographer
+    crypto: EmailCryptographer
 
-    emailbox_id: int
-    email_server_id: bytes
-    email_address: bytes
-    email_password: bytes
+    owner_id: int
+    server_id: bytes
+    address: bytes
+    password: bytes
+    forum_id: int | None = None
+    last_fetched_email_id: int | None = None
+    enabled: bool | None = None
+    db_id: int | None = None
 
-    def decrypt(self) -> "DecryptedEmailAuthData":
-        return DecryptedEmailAuthData(
-            _crypto=self._crypto,
-            emailbox_id=self.emailbox_id,
-            email_server=get_server_by_id(id_=self._crypto.decrypt_key(code=self.email_server_id)).value,
-            email_auth_data=EmailAuthData(
-                email=self._crypto.decrypt_key(code=self.email_address),
-                password=SecretStr(self._crypto.decrypt_key(code=self.email_password)),
-            ),
+    def decrypt(self) -> base.DecryptedModel:
+        return DecryptedEmailbox(
+            crypto=self.crypto,
+            owner_id=self.owner_id,
+            server_id=self.crypto.decrypt_key(self.server_id),
+            address=self.crypto.decrypt_key(self.address),
+            password=self.crypto.decrypt_key(self.password),
+            forum_id=self.forum_id,
+            last_fetched_email_id=self.last_fetched_email_id,
+            enabled=self.enabled,
         )
 
 

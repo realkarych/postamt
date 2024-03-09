@@ -2,8 +2,8 @@ from sqlalchemy import Column, BigInteger, Boolean, LargeBinary
 from app.services.database.base import Base
 
 
-class EmailBox(Base):
-    """Implements model for email boxes"""
+class Emailbox(Base):
+    """Implements model for emailbox in database"""
 
     __tablename__ = "email_boxes"
 
@@ -14,11 +14,11 @@ class EmailBox(Base):
     owner_id = Column(BigInteger, nullable=False)  # Telegram id of emailbox owner.
     forum_id = Column(BigInteger, nullable=True, default=None)  # Emailbox works in Forum (supergroup).
     last_fetched_email_id = Column(BigInteger, nullable=False, default=0)  # Pointer of last fetched email.
-    is_active = Column(Boolean, default=True)  # If auth data is non actual, I mark it as disabled and don't fetch.
+    enabled = Column(Boolean, default=True)  # If auth data is non actual, I mark it as disabled and don't fetch.
 
     def __repr__(self) -> str:
         return (
             f"Emailbox: {self.id} | Owner ID: {self.owner_id} | Forum ID: {self.forum_id}\n"
             f"Server: {self.server_id} | Address: {self.address} | Password: {self.password}\n"
-            f"Last fetched email ID: {self.last_fetched_email_id}, Is active: {self.is_active}"
+            f"Last fetched email ID: {self.last_fetched_email_id}, Enabled: {self.is_active}"
         )

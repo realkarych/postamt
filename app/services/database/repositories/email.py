@@ -1,100 +1,56 @@
-from typing import Optional
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
-from sqlalchemy.exc import IntegrityError, SQLAlchemyError
+from sqlalchemy import exc
 from app.exceptions.repo import DBError, ModelExists
-from app.models.email import EmailBox as DBEmailBox, EmailAuthData as DBEmailAuthData
-from app.entities.email import EmailBox, EncryptedEmailAuthData
+from app.models.email import Emailbox as DBEmailbox
+from app.entities.email import EncryptedEmailbox
 from app.services.cryptography.cryptographer import EmailCryptographer
 
 
 class EmailRepo:
-    """Implements repository for email entity"""
+    """Implements repository for emailbox entity"""
 
-    def __init__(self, session: AsyncSession) -> None:
+    def __init__(self, session: AsyncSession, crypto: EmailCryptographer) -> None:
         self._session = session
+        self._crypto = crypto
 
-    async def add_auth_data(self, auth_data: EncryptedEmailAuthData) -> None:
+    async def add_emailbox(self, emailbox: EncryptedEmailbox, update_if_exists: bool = False) -> None:
+        db_emailbox = _convert_emailbox_to_db_emailbox(emailbox)
         try:
-            self._session.add(_convert_auth_data_to_db_auth_data(auth_data))
+            if update_if_exists:
+                self._session.add(db_emailbox)
+            else:
+                await self._session.merge(db_emailbox)
             await self._session.commit()
-        except IntegrityError as e:
-            raise ModelExists("Email auth data already exists in the database") from e
-        except SQLAlchemyError as e:
-            raise DBError("Failed to add email auth data to the database") from e
+        except exc.IntegrityError as e:
+            raise ModelExists("Adding model {model} failed".format(model=str(db_emailbox))) from e
+        except exc.DatabaseError as e:
+            raise DBError("Adding model {model} failed".format(model=str(db_emailbox))) from e
 
-    async def add_emailbox(self, emailbox: EmailBox) -> None:
-        try:
-            self._session.add(_convert_emailbox_to_db_emailbox(emailbox))
-            await self._session.commit()
-        except IntegrityError as e:
-            raise ModelExists("Emailbox exists in the database") from e
-        except SQLAlchemyError as e:
-            raise DBError("Failed to add Emailbox to the database") from e
-
-    async def get_emailbox(
-        self, crypto: EmailCryptographer, emailbox_id: int
-    ) -> Optional[tuple[EmailBox, EncryptedEmailAuthData]]:
-        """Gets email box from the database"""
-        try:
-            query = (
-                select(DBEmailBox, DBEmailAuthData)
-                .join(DBEmailAuthData, DBEmailAuthData.emailbox_id == DBEmailBox.id)
-                .where(DBEmailBox.id == emailbox_id)
-            )
-
-            result = await self._session.execute(query)
-            db_emailbox, db_auth_data = result.scalar_one()
-
-            if not db_emailbox:
-                return None
-            # This case is wrong, raise an exception
-            if not db_auth_data:
-                raise DBError("Failed to get emailbox auth data from the database")
-
-            emailbox = _convert_db_emailbox_to_emailbox(db_emailbox)
-            auth_data = _convert_db_auth_data_to_auth_data(crypto, db_auth_data)
-            return emailbox, auth_data
-        except SQLAlchemyError as e:
-            raise DBError("Failed to get emailbox from the database") from e
+    # TODO: set_forum method overloading via singledispatch
 
 
-def _convert_emailbox_to_db_emailbox(emailbox: EmailBox) -> DBEmailBox:
-    return DBEmailBox(
+def _convert_emailbox_to_db_emailbox(emailbox: EncryptedEmailbox) -> DBEmailbox:
+    return DBEmailbox(
         id=emailbox.db_id,
+        server_id=emailbox.server_id,
+        address=emailbox.address,
+        password=emailbox.password,
         owner_id=emailbox.owner_id,
         forum_id=emailbox.forum_id,
-        last_handled_email_id=emailbox.last_handled_email_id,
-        is_active=emailbox.is_active,
+        last_fetched_email_id=emailbox.last_fetched_email_id,
+        enabled=emailbox.enabled,
     )
 
 
-def _convert_db_emailbox_to_emailbox(db_emailbox: DBEmailBox) -> EmailBox:
-    return EmailBox(
+def _convert_db_emailbox_to_emailbox(crypto: EmailCryptographer, db_emailbox: DBEmailbox) -> EncryptedEmailbox:
+    return EncryptedEmailbox(
+        crypto=crypto,
         db_id=int(str(db_emailbox.id)),
+        server_id=db_emailbox.server_id,
+        address=bytes(db_emailbox.address),  # type: ignore
+        password=bytes(db_emailbox.password),  # type: ignore
         owner_id=int(str(db_emailbox.owner_id)),
         forum_id=int(str(db_emailbox.forum_id)),
-        last_handled_email_id=int(str(db_emailbox.last_handled_email_id)),
-        is_active=bool(db_emailbox.is_active),
-    )
-
-
-def _convert_auth_data_to_db_auth_data(auth_data: EncryptedEmailAuthData) -> DBEmailAuthData:
-    return DBEmailAuthData(
-        emailbox_id=auth_data.emailbox_id,
-        email_server_id=auth_data.email_server_id,
-        email_address=auth_data.email_address,
-        email_password=auth_data.email_password,
-    )
-
-
-def _convert_db_auth_data_to_auth_data(
-    crypto: EmailCryptographer, db_auth_data: DBEmailAuthData
-) -> EncryptedEmailAuthData:
-    return EncryptedEmailAuthData(
-        _crypto=crypto,
-        emailbox_id=int(str(db_auth_data.emailbox_id)),
-        email_server_id=bytes(db_auth_data.email_server_id),  # type: ignore
-        email_address=bytes(db_auth_data.email_address),  # type: ignore
-        email_password=bytes(db_auth_data.email_password),  # type: ignore
+        last_fetched_email_id=int(str(db_emailbox.last_fetched_email_id)),
+        enabled=bool(db_emailbox.enabled),
     )
