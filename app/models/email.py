@@ -8,30 +8,17 @@ class EmailBox(Base):
     __tablename__ = "email_boxes"
 
     id = Column(BigInteger, primary_key=True, unique=True, autoincrement=True)
-    owner_id = Column(BigInteger, nullable=False)
-    forum_id = Column(BigInteger, nullable=True, default=None)
-    last_handled_email_id = Column(BigInteger, nullable=False, default=0)
-    is_active = Column(Boolean, default=True)
+    server_id = Column(LargeBinary, nullable=False)  # Like `gmail`, `yandex` etc.
+    address = Column(LargeBinary, nullable=False)  # email@domain. Encrypted.
+    password = Column(LargeBinary, nullable=False)  # access key generated in account. Encrypted.
+    owner_id = Column(BigInteger, nullable=False)  # Telegram id of emailbox owner.
+    forum_id = Column(BigInteger, nullable=True, default=None)  # Emailbox works in Forum (supergroup).
+    last_fetched_email_id = Column(BigInteger, nullable=False, default=0)  # Pointer of last fetched email.
+    is_active = Column(Boolean, default=True)  # If auth data is non actual, I mark it as disabled and don't fetch.
 
     def __repr__(self) -> str:
         return (
-            f"Emailbox: {self.id} | Owner ID: {self.owner_id}, Forum ID: {self.forum_id}, "
-            f"Last handled email ID: {self.last_handled_email_id}, Is active: {self.is_active}"
-        )
-
-
-class EmailAuthData(Base):
-    """Implements model for email auth datas"""
-
-    __tablename__ = "email_auths"
-
-    emailbox_id = Column(BigInteger, primary_key=True, nullable=False)
-    email_server_id = Column(LargeBinary, nullable=False)
-    email_address = Column(LargeBinary, nullable=False)
-    email_password = Column(LargeBinary, nullable=False)
-
-    def __repr__(self) -> str:
-        return (
-            f"EmailAuthData for {self.emailbox_id} | Email server ID: {self.email_server_id}, "
-            f"Email address: {self.email_address}, Email password: {self.email_password}"
+            f"Emailbox: {self.id} | Owner ID: {self.owner_id} | Forum ID: {self.forum_id}\n"
+            f"Server: {self.server_id} | Address: {self.address} | Password: {self.password}\n"
+            f"Last fetched email ID: {self.last_fetched_email_id}, Is active: {self.is_active}"
         )
