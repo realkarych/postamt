@@ -12,7 +12,7 @@ services:
     restart: always
     ports:
       - "127.0.0.1:15432:5432"
-    hostname: db
+    hostname: ${POSTGRES_HOST}
   bot:
     build:
       context: .
@@ -21,7 +21,7 @@ services:
       - BOT_DEFAULT_LOCALE=en
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_HOST=db
+      - POSTGRES_HOST=${POSTGRES_HOST}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - APP_LOGGING_LEVEL=${APP_LOGGING_LEVEL}
       - BOT_TOKEN=${BOT_TOKEN}

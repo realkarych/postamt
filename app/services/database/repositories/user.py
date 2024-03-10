@@ -15,27 +15,24 @@ class UserRepo:
     def __init__(self, session: AsyncSession) -> None:
         self._session = session
 
-    async def add_user(self, user: User, force_merge: bool = False) -> None:
+    async def add_user(self, user: User, update_when_exists: bool = False) -> None:
         """
         Adds user to the database
-        :param force_merge: If True, will merge (force update, rewrite) user into the database
+        :param update_when_exists: If True, will merge (force update, rewrite) user into the database
         """
-        async with self._session.begin():
-            try:
-                db_user = _convert_user_to_db_user(user)
-                if force_merge:
-                    logging.info("Merging user: %s", db_user)
-                    await self._session.merge(db_user)
-                else:
-                    self._session.add(db_user)
-                await self._session.flush()
+        try:
+            db_user = _convert_user_to_db_user(user)
+            if update_when_exists:
+                logging.info("Merging user: %s", db_user)
+                await self._session.merge(db_user)
+            else:
+                self._session.add(db_user)
+            await self._session.commit()
 
-            except IntegrityError as e:
-                await self._session.rollback()
-                raise ModelExists("Failed to add user to the database") from e
-            except SQLAlchemyError as e:
-                await self._session.rollback()
-                raise DBError("Failed to add user to the database") from e
+        except IntegrityError as e:
+            raise ModelExists("Failed to add user to the database") from e
+        except SQLAlchemyError as e:
+            raise DBError("Failed to add user to the database") from e
 
     async def get_user(self, user_id: int) -> Optional[User]:
         """Gets user from the database"""
@@ -49,13 +46,7 @@ class UserRepo:
 
 
 def _convert_user_to_db_user(user: User) -> DBUser:
-    return DBUser(
-        id=user.id_,
-        username=user.username,
-        firstname=user.firstname,
-        lastname=user.lastname,
-        registered_date=user.registered_date,
-    )
+    return DBUser(id=user.id_, username=user.username, firstname=user.firstname, lastname=user.lastname)
 
 
 def _convert_db_user_to_user(db_user: DBUser) -> User:
@@ -64,5 +55,5 @@ def _convert_db_user_to_user(db_user: DBUser) -> User:
         username=str(db_user.username) if db_user.username else None,  # pyright: ignore
         firstname=str(db_user.firstname) if db_user.firstname else None,  # pyright: ignore
         lastname=str(db_user.lastname) if db_user.lastname else None,  # pyright: ignore
-        registered_date=db_user.registered_date if db_user.registered_date is not None else None,  # pyright: ignore
+        registered_date=db_user.registered_date if db_user.registered_date else None,  # pyright: ignore
     )

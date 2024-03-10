@@ -9,7 +9,10 @@ from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.utils.i18n import I18n, SimpleI18nMiddleware
 
 from app.core.handlers import factory
-from app.core.handlers.private_chat import base as base_handlers
+from app.core.handlers.private_chat import (
+    base_commands as base_handlers,
+    email_auth as email_auth_handlers,
+)
 from app.core.handlers import error as error_handlers
 from app.core.middlewares.db import DbSessionMiddleware
 from app.core.middlewares.fernet_keys import FernetKeysMiddleware
@@ -41,8 +44,7 @@ async def main() -> None:
     )
     session_pool = await setup_get_pool(db_uri=configloader.postgres_dsn)
 
-    dp.message.middleware(SimpleI18nMiddleware(i18n))
-    dp.callback_query.middleware(SimpleI18nMiddleware(i18n))
+    SimpleI18nMiddleware(i18n).setup(dp)
 
     dp.message.middleware(FernetKeysMiddleware(configloader.fernet_keys))
     dp.callback_query.middleware(FernetKeysMiddleware(configloader.fernet_keys))
@@ -55,6 +57,8 @@ async def main() -> None:
     factory.register(
         dp,
         error_handlers,
+        email_auth_handlers,
+        # This module should be the last one, because it contains handler of unexpected messages
         base_handlers,
     )
     # ------------------------------------------------------------

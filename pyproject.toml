@@ -8,7 +8,7 @@ authors = ["Andrey Karchevsky <karych@karych.ru>"]
 python = "^3.12"
 greenlet = "*"
 asyncpg = "^0.29.0"
-sqlalchemy = "==2.0.27"
+sqlalchemy = "==2.0.28"
 alembic = "==1.13.1"
 pydantic-settings = "==2.2.1"
 cryptography = "^42.0.5"
@@ -23,7 +23,7 @@ extras = ["i18n"]
 [tool.poetry.group.dev.dependencies]
 flake8 = "^7.0.0"
 black = "^24.2.0"
-pyright = "^1.1.352"
+pyright = "^1.1.353"
 
 [build-system]
 requires = ["poetry-core"]
