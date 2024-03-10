@@ -110,6 +110,7 @@ async def handle_entered_password(m: types.Message, session: AsyncSession, state
             ),
         )
         await state.update_data({str(_EmailDataIds.password): password})
+        await _handle_correct_auth()
 
     else:
         await m.answer(
@@ -120,6 +121,11 @@ async def handle_entered_password(m: types.Message, session: AsyncSession, state
                 email_password=password,
             )
         )
+
+
+async def _handle_correct_auth(message: types.Message, session: AsyncSession, state: FSMContext) -> None:
+    # TODO: Implement adding to db and sending message with Forum setup guideline
+    await state.clear()
 
 
 async def btn_cancel_action(m: types.Message, state: FSMContext) -> None:
