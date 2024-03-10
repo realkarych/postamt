@@ -1,9 +1,11 @@
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import exc
 from app.exceptions.repo import DBError, ModelExists
 from app.models.email import Emailbox as DBEmailbox
 from app.entities.email import EncryptedEmailbox
 from app.services.cryptography.cryptographer import EmailCryptographer
+from functools import singledispatch
 
 
 class EmailRepo:
@@ -13,20 +15,46 @@ class EmailRepo:
         self._session = session
         self._crypto = crypto
 
-    async def add_emailbox(self, emailbox: EncryptedEmailbox, update_if_exists: bool = False) -> None:
+    async def add_emailbox(self, emailbox: EncryptedEmailbox) -> None:
+        if self.is_emailbox_exists(emailbox):
+            raise ModelExists("Emailbox {emailbox} already exists".format(emailbox=str(emailbox)))
+
         db_emailbox = _convert_emailbox_to_db_emailbox(emailbox)
         try:
-            if update_if_exists:
-                await self._session.merge(db_emailbox)
-            else:
-                self._session.add(db_emailbox)
+            self._session.add(db_emailbox)
             await self._session.commit()
         except exc.IntegrityError as e:
             raise ModelExists("Adding model {model} failed".format(model=str(db_emailbox))) from e
         except exc.DatabaseError as e:
             raise DBError("Adding model {model} failed".format(model=str(db_emailbox))) from e
 
-    # TODO: set_forum method overloading via singledispatch
+    @singledispatch
+    async def get_emailbox(self, emailbox_id: int) -> EncryptedEmailbox | None:
+        query = select(DBEmailbox).where(DBEmailbox.id == emailbox_id)
+        db_emailbox = (await self._session.execute(query)).scalar_one_or_none()
+        if not db_emailbox:
+            return None
+        return _convert_db_emailbox_to_emailbox(self._crypto, db_emailbox)
+
+    @get_emailbox.register
+    async def _(self, emailbox: EncryptedEmailbox) -> EncryptedEmailbox | None:
+        query = select(DBEmailbox).where(
+            DBEmailbox.address == emailbox.address,
+            DBEmailbox.password == emailbox.password,
+            DBEmailbox.owner_id == emailbox.owner_id,
+        )
+        db_emailbox = (await self._session.execute(query)).scalar_one_or_none()
+        if not db_emailbox:
+            return None
+        return _convert_db_emailbox_to_emailbox(self._crypto, db_emailbox)
+
+    async def is_emailbox_exists(self, emailbox: EncryptedEmailbox) -> bool:
+        query = select(DBEmailbox).where(
+            DBEmailbox.address == emailbox.address,
+            DBEmailbox.password == emailbox.password,
+            DBEmailbox.owner_id == emailbox.owner_id,
+        )
+        return (await self._session.execute(query)).scalar_one_or_none() is not None
 
 
 def _convert_emailbox_to_db_emailbox(emailbox: EncryptedEmailbox) -> DBEmailbox:

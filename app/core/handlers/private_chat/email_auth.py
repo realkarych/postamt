@@ -12,6 +12,8 @@ from app.core.keyboards import inline, reply
 from app.core.states import email_connection as email_states
 from app.entities import email as email_entities
 from sqlalchemy.ext.asyncio import AsyncSession
+from app.exceptions.repo import ModelExists
+from app.services.database.repositories.email import EmailRepo
 
 from app.services.email.imap.repository import ImapRepository
 from app.services.email.imap.session import ImapSession
@@ -123,8 +125,27 @@ async def handle_entered_password(m: types.Message, session: AsyncSession, state
         )
 
 
-async def _handle_correct_auth(message: types.Message, session: AsyncSession, state: FSMContext) -> None:
-    # TODO: Implement adding to db and sending message with Forum setup guideline
+async def _handle_correct_auth(message: types.Message, repo: EmailRepo, state: FSMContext) -> None:
+    try:
+        await repo.add_emailbox(
+            emailbox=email_entities.DecryptedEmailbox(
+                server=(await state.get_data()).get(str(_EmailDataIds.server)),
+                email=(await state.get_data()).get(str(_EmailDataIds.address)),
+                password=(await state.get_data()).get(str(_EmailDataIds.password)),
+            )
+        )
+        await message.answer(
+            text=_(
+                "Now, you need to setup Forum. Follow the guideline: "
+                '<a href="https://blog.karych.ru/postamt-forum-setup">'
+            ),
+            reply_markup=reply.base_menu(),
+        )
+    except ModelExists:
+        await message.answer(
+            text=_("<i>This emailbox already exists!</i>"),
+            reply_markup=reply.base_menu(),
+        )
     await state.clear()
 
 
