@@ -29,7 +29,7 @@ def chat_is_forum(handler: Callable) -> Callable[[ChatMemberUpdated, Bot, Any], 
                     "Chat <b>{chat_title}</b> is not a forum...\nCheck the "
                     '<a href="https://blog.karych.ru/postamt-forum-setup">guideline</a> and try again '
                     "(remove bot from this group and add again).",
-                ),
+                ).format(chat_title=event.chat.title),
             )
         return
 
