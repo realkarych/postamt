@@ -9,9 +9,13 @@ from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.utils.i18n import I18n, SimpleI18nMiddleware
 
 from app.core.handlers import factory
+
 from app.core.handlers.private_chat import (
     base_commands as base_handlers,
     email_auth as email_auth_handlers,
+)
+from app.core.handlers.forum import (
+    triggers as forum_triggers
 )
 from app.core.handlers import error as error_handlers
 from app.core.middlewares.db import DbSessionMiddleware
@@ -58,6 +62,7 @@ async def main() -> None:
         dp,
         error_handlers,
         email_auth_handlers,
+        forum_triggers,
         # This module should be the last one, because it contains handler of unexpected messages
         base_handlers,
     )
