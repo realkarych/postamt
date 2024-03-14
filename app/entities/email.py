@@ -168,7 +168,7 @@ class EncryptedEmailbox(base.EncryptedModel):
     enabled: bool | None = None
     db_id: int | None = None
 
-    def decrypt(self) -> base.DecryptedModel:
+    def decrypt(self) -> "DecryptedEmailbox":
         return DecryptedEmailbox(
             crypto=self.crypto,
             owner_id=self.owner_id,

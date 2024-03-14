@@ -16,7 +16,7 @@ class EmailRepo:
         self._crypto = crypto
 
     async def add_emailbox(self, emailbox: EncryptedEmailbox) -> None:
-        if self.is_emailbox_exists(emailbox):
+        if await self.is_emailbox_exists(emailbox):
             raise ModelExists("Emailbox {emailbox} already exists".format(emailbox=str(emailbox)))
 
         db_emailbox = _convert_emailbox_to_db_emailbox(emailbox)
@@ -47,6 +47,23 @@ class EmailRepo:
         if not db_emailbox:
             return None
         return _convert_db_emailbox_to_emailbox(self._crypto, db_emailbox)
+
+    async def get_emailbox_without_forum(self, user_id: int) -> EncryptedEmailbox | None:
+        """Gets emailbox by user_id"""
+        query = select(DBEmailbox).where(
+            DBEmailbox.owner_id == user_id,
+            DBEmailbox.forum_id == None  # noqa
+        )
+        db_emailbox = (await self._session.execute(query)).scalar_one_or_none()
+        if not db_emailbox:
+            return None
+        return _convert_db_emailbox_to_emailbox(self._crypto, db_emailbox)
+
+    async def update_forum_id(self, emailbox_id: int, forum_id: int) -> None:
+        """Updates forum_id for emailbox"""
+        query = DBEmailbox.update().where(DBEmailbox.id == emailbox_id).values(forum_id=forum_id)
+        await self._session.execute(query)
+        await self._session.commit()
 
     async def is_emailbox_exists(self, emailbox: EncryptedEmailbox) -> bool:
         query = select(DBEmailbox).where(

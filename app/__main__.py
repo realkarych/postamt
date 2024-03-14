@@ -14,9 +14,7 @@ from app.core.handlers.private_chat import (
     base_commands as base_handlers,
     email_auth as email_auth_handlers,
 )
-from app.core.handlers.forum import (
-    triggers as forum_triggers
-)
+from app.core.handlers.forum import triggers as forum_triggers
 from app.core.handlers import error as error_handlers
 from app.core.middlewares.db import DbSessionMiddleware
 from app.core.middlewares.fernet_keys import FernetKeysMiddleware
