@@ -151,6 +151,7 @@ class DecryptedEmailbox(base.DecryptedModel):
             forum_id=self.forum_id,
             last_fetched_email_id=self.last_fetched_email_id,
             enabled=self.enabled,
+            db_id=self.db_id,
         )
 
 
@@ -178,6 +179,7 @@ class EncryptedEmailbox(base.EncryptedModel):
             forum_id=self.forum_id,
             last_fetched_email_id=self.last_fetched_email_id,
             enabled=self.enabled,
+            db_id=self.db_id,
         )
 
 

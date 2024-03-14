@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import update, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import exc
 from app.exceptions.repo import DBError, ModelExists
@@ -51,14 +51,15 @@ class EmailRepo:
     async def get_emailbox_without_forum(self, user_id: int) -> EncryptedEmailbox | None:
         """Gets emailbox by user_id"""
         query = select(DBEmailbox).where(DBEmailbox.owner_id == user_id, DBEmailbox.forum_id == None)  # noqa
-        db_emailbox = (await self._session.execute(query)).scalar_one_or_none()
+        db_emailbox = (await self._session.execute(query)).scalars()
         if not db_emailbox:
             return None
-        return _convert_db_emailbox_to_emailbox(self._crypto, db_emailbox)
+        return _convert_db_emailbox_to_emailbox(self._crypto, db_emailbox.fetchall()[0])
 
     async def update_forum_id(self, emailbox_id: int, forum_id: int) -> None:
         """Updates forum_id for emailbox"""
-        query = DBEmailbox.update().where(DBEmailbox.id == emailbox_id).values(forum_id=forum_id)
+
+        query = update(DBEmailbox).where(DBEmailbox.id == emailbox_id).values(forum_id=forum_id)
         await self._session.execute(query)
         await self._session.commit()
 

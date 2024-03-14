@@ -1,5 +1,4 @@
 from functools import wraps
-import logging
 from typing import Any, Callable, Coroutine
 from aiogram import Router, Bot
 from aiogram.exceptions import TelegramBadRequest, TelegramForbiddenError
