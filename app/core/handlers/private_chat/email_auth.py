@@ -123,12 +123,9 @@ async def handle_entered_password(
         )
         await _handle_correct_auth(
             message=m,
-            repo=EmailRepo(
-                session=session,
-                crypto=EmailCryptographer(fernet_key=fernet_keys[FernetIDs.EMAIL])
-            ),
+            repo=EmailRepo(session=session, crypto=EmailCryptographer(fernet_key=fernet_keys[FernetIDs.EMAIL])),
             state=state,
-            fernet_keys=fernet_keys
+            fernet_keys=fernet_keys,
         )
 
     else:
