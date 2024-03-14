@@ -1,3 +1,5 @@
+from functools import wraps
+import logging
 from typing import Any, Callable, Coroutine
 from aiogram import Router, Bot
 from aiogram.exceptions import TelegramBadRequest, TelegramForbiddenError
@@ -23,10 +25,13 @@ from app.services.cryptography.cryptographer import EmailCryptographer
 from app.services.database.repositories.email import EmailRepo
 
 
-def chat_is_forum(handler: Callable) -> Callable[[ChatMemberUpdated, Bot, Any], Coroutine]:
-    async def wrapper(event: ChatMemberUpdated, bot: Bot, *args, **kwargs):
+def chat_is_forum(handler: Callable[..., Coroutine[Any, Any, Any]]) -> Callable[..., Coroutine[Any, Any, Any]]:
+    @wraps(handler)
+    async def wrapper(
+        event: ChatMemberUpdated, bot: Bot, session: AsyncSession, fernet_keys: dict[FernetIDs, bytes]
+    ) -> Any:
         if event.chat.is_forum:
-            return await handler(event, bot, *args, **kwargs)
+            return await handler(event, bot, session, fernet_keys)
 
         with suppress(TelegramBadRequest):
             await bot.send_message(

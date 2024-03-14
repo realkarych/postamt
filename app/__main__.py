@@ -49,9 +49,11 @@ async def main() -> None:
     SimpleI18nMiddleware(i18n).setup(dp)
 
     dp.message.middleware(FernetKeysMiddleware(configloader.fernet_keys))
+    dp.my_chat_member.middleware(FernetKeysMiddleware(configloader.fernet_keys))
     dp.callback_query.middleware(FernetKeysMiddleware(configloader.fernet_keys))
 
     dp.message.middleware(DbSessionMiddleware(session_pool))
+    dp.my_chat_member.middleware(DbSessionMiddleware(session_pool))
     dp.callback_query.middleware(DbSessionMiddleware(session_pool))
     dp.edited_message.middleware(DbSessionMiddleware(session_pool))
 
