@@ -1,4 +1,3 @@
-from typing import Optional
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.topic import Topic as DBTopic
@@ -13,8 +12,9 @@ from app.services.cryptography.cryptographer import TopicCryptographer
 class TopicRepo:
     """Implements repository for topic entity"""
 
-    def __init__(self, session: AsyncSession) -> None:
+    def __init__(self, session: AsyncSession, crypto: TopicCryptographer) -> None:
         self._session = session
+        self._crypto = crypto
 
     async def add_topic(self, topic: DecryptedTopic, update_when_exists: bool = False) -> None:
         """Adds topic to database"""
@@ -35,13 +35,13 @@ class TopicRepo:
                 await self._session.rollback()
                 raise DBError("Failed to add topic to the database") from e
 
-    async def get_topic(self, crypto: TopicCryptographer, forum_id: int, topic_id: int) -> Optional[DecryptedTopic]:
+    async def get_topic(self, forum_id: int, topic_id: int) -> EncryptedTopic | None:
         """Gets topic from the database"""
         try:
             query = select(DBTopic).where(DBTopic.forum_id == forum_id, DBTopic.topic_id == topic_id)
             result = await self._session.execute(query)
             db_topic = result.scalar_one_or_none()
-            return _convert_db_topic_to_topic(crypto, db_topic).decrypt() if db_topic else None
+            return _convert_db_topic_to_topic(self._crypto, db_topic) if db_topic else None
         except SQLAlchemyError as e:
             raise DBError("Failed to get topic from the database") from e
 

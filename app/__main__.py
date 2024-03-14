@@ -9,10 +9,12 @@ from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.utils.i18n import I18n, SimpleI18nMiddleware
 
 from app.core.handlers import factory
+
 from app.core.handlers.private_chat import (
     base_commands as base_handlers,
     email_auth as email_auth_handlers,
 )
+from app.core.handlers.forum import triggers as forum_triggers
 from app.core.handlers import error as error_handlers
 from app.core.middlewares.db import DbSessionMiddleware
 from app.core.middlewares.fernet_keys import FernetKeysMiddleware
@@ -47,9 +49,11 @@ async def main() -> None:
     SimpleI18nMiddleware(i18n).setup(dp)
 
     dp.message.middleware(FernetKeysMiddleware(configloader.fernet_keys))
+    dp.my_chat_member.middleware(FernetKeysMiddleware(configloader.fernet_keys))
     dp.callback_query.middleware(FernetKeysMiddleware(configloader.fernet_keys))
 
     dp.message.middleware(DbSessionMiddleware(session_pool))
+    dp.my_chat_member.middleware(DbSessionMiddleware(session_pool))
     dp.callback_query.middleware(DbSessionMiddleware(session_pool))
     dp.edited_message.middleware(DbSessionMiddleware(session_pool))
 
@@ -58,6 +62,7 @@ async def main() -> None:
         dp,
         error_handlers,
         email_auth_handlers,
+        forum_triggers,
         # This module should be the last one, because it contains handler of unexpected messages
         base_handlers,
     )
