@@ -5,7 +5,7 @@ from app.exceptions.repo import DBError, ModelExists
 from app.models.email import Emailbox as DBEmailbox
 from app.entities.email import DecryptedEmailbox, EncryptedEmailbox
 from app.services.cryptography.cryptographer import EmailCryptographer
-from functools import singledispatch
+from functools import singledispatchmethod
 
 
 class EmailRepo:
@@ -16,7 +16,7 @@ class EmailRepo:
         self._crypto = crypto
 
     async def add_emailbox(self, emailbox: EncryptedEmailbox) -> None:
-        if await self.is_emailbox_exists(emailbox.decrypt()):
+        if await self.emailbox_exists(emailbox.decrypt()):
             raise ModelExists("Emailbox {emailbox} already exists".format(emailbox=str(emailbox)))
 
         db_emailbox = _convert_emailbox_to_db_emailbox(emailbox)
@@ -28,7 +28,7 @@ class EmailRepo:
         except exc.DatabaseError as e:
             raise DBError("Adding model {model} failed".format(model=str(db_emailbox))) from e
 
-    @singledispatch
+    @singledispatchmethod
     async def get_emailbox(self, emailbox_id: int) -> EncryptedEmailbox | None:
         query = select(DBEmailbox).where(DBEmailbox.id == emailbox_id)
         db_emailbox = (await self._session.execute(query)).scalar_one_or_none()
@@ -48,22 +48,34 @@ class EmailRepo:
             return None
         return _convert_db_emailbox_to_emailbox(self._crypto, db_emailbox)
 
+    @get_emailbox.register
+    async def _(self, user_id: int, forum_id: int) -> EncryptedEmailbox | None:
+        query = select(DBEmailbox).where(
+            DBEmailbox.owner_id == user_id,
+            DBEmailbox.forum_id == forum_id,
+        )
+        db_emailbox = (await self._session.execute(query)).scalar_one_or_none()
+        if not db_emailbox:
+            return None
+        return _convert_db_emailbox_to_emailbox(self._crypto, db_emailbox)
+
     async def get_emailbox_without_forum(self, user_id: int) -> EncryptedEmailbox | None:
         """Gets emailbox by user_id"""
         query = select(DBEmailbox).where(DBEmailbox.owner_id == user_id, DBEmailbox.forum_id == None)  # noqa
-        db_emailbox = (await self._session.execute(query)).scalars()
+        result = await self._session.execute(query)
+        db_emailbox = result.scalars().fetchall()
         if not db_emailbox:
             return None
-        return _convert_db_emailbox_to_emailbox(self._crypto, db_emailbox.fetchall()[0])
+        return _convert_db_emailbox_to_emailbox(self._crypto, db_emailbox[0])
 
-    async def update_forum_id(self, emailbox_id: int, forum_id: int) -> None:
-        """Updates forum_id for emailbox"""
+    async def update_forum_id(self, emailbox_id: int, forum_id: int | None) -> None:
+        """Updates forum_id for emailbox. forum_id=None resets value."""
 
         query = update(DBEmailbox).where(DBEmailbox.id == emailbox_id).values(forum_id=forum_id)
         await self._session.execute(query)
         await self._session.commit()
 
-    async def is_emailbox_exists(self, emailbox: DecryptedEmailbox) -> bool:
+    async def emailbox_exists(self, emailbox: DecryptedEmailbox) -> bool:
         query = select(DBEmailbox).where(DBEmailbox.owner_id == emailbox.owner_id)
         user_emailboxes = [
             _convert_db_emailbox_to_emailbox(self._crypto, box).decrypt()

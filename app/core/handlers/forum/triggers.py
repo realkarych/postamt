@@ -66,7 +66,7 @@ async def bot_added_to_forum(
         await bot.send_message(
             chat_id=owner_id,
             text=_(
-                "🚫 <b>Bot was added to the forum <b>{chat_title}</b>, but you have no connected emailbox.\n\n"
+                "🚫 Bot was added to the forum <b>{chat_title}</b>, but you have no connected emailbox.\n\n"
                 "Please, add an emailbox to the bot in private messages and try again.",
             ).format(chat_title=event.chat.title),
         )
@@ -88,6 +88,22 @@ async def bot_added_to_forum(
     await _update_forum_settings(event, bot)
 
 
+async def bot_removed_from_forum(
+    event: ChatMemberUpdated, session: AsyncSession, bot: Bot, fernet_keys: dict[FernetIDs, bytes]
+) -> None:
+    repo = EmailRepo(session=session, crypto=EmailCryptographer(fernet_key=fernet_keys[FernetIDs.EMAIL]))
+    user_email = await repo.get_emailbox(event.from_user.id, event.chat.id)
+    if not user_email:
+        return
+    user_email = user_email.decrypt()
+    await repo.update_forum_id(emailbox_id=user_email.db_id, forum_id=None)  # type: ignore
+    with suppress(TelegramBadRequest, TelegramForbiddenError):
+        await bot.send_message(
+            chat_id=user_email.owner_id,
+            text=_("Bot was removed from the forum {chat_title}.").format(chat_title=event.chat.title),
+        )
+
+
 async def _update_forum_settings(event: ChatMemberUpdated, bot: Bot) -> None:
     with suppress(TelegramBadRequest, TelegramForbiddenError):
         await bot.set_chat_photo(chat_id=event.chat.id, photo=FSInputFile(path=str(paths.LOGO_IMAGE_PATH)))
@@ -104,6 +120,11 @@ def register() -> Router:
         ChatMemberUpdatedFilter(
             member_status_changed=(IS_NOT_MEMBER | MEMBER | KICKED | LEFT | RESTRICTED) >> (ADMINISTRATOR | CREATOR)
         ),
+    )
+
+    router.my_chat_member.register(
+        bot_removed_from_forum,
+        ChatMemberUpdatedFilter(member_status_changed=(ADMINISTRATOR | CREATOR) >> (IS_NOT_MEMBER | KICKED | LEFT)),
     )
 
     return router
