@@ -100,7 +100,7 @@ class EmailRepo:
 
     async def get_active_emailboxes(self, user_id: int) -> AsyncGenerator[EncryptedEmailbox, None]:
         """Gets all active emailboxes for user"""
-        query = select(DBEmailbox).where(DBEmailbox.owner_id == user_id, DBEmailbox.enabled == True)
+        query = select(DBEmailbox).where(DBEmailbox.owner_id == user_id, DBEmailbox.enabled == True)  # noqa
         async for row in await self._session.stream(query):
             db_emailbox = row.DBEmailbox
             yield _convert_db_emailbox_to_emailbox(self._crypto, db_emailbox)
