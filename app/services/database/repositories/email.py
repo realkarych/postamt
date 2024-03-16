@@ -1,3 +1,4 @@
+from typing import AsyncGenerator
 from sqlalchemy import update, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import exc
@@ -84,6 +85,25 @@ class EmailRepo:
         if not user_emailboxes:
             return False
         return any(box.password == emailbox.password and box.address == emailbox.address for box in user_emailboxes)
+
+    async def disable_emailbox(self, emailbox_id: int) -> None:
+        """Disables emailbox by id"""
+        query = update(DBEmailbox).where(DBEmailbox.id == emailbox_id).values(enabled=False)
+        await self._session.execute(query)
+        await self._session.commit()
+
+    async def enable_emailbox(self, emailbox_id: int) -> None:
+        """Enables emailbox by id"""
+        query = update(DBEmailbox).where(DBEmailbox.id == emailbox_id).values(enabled=True)
+        await self._session.execute(query)
+        await self._session.commit()
+
+    async def get_active_emailboxes(self, user_id: int) -> AsyncGenerator[EncryptedEmailbox, None]:
+        """Gets all active emailboxes for user"""
+        query = select(DBEmailbox).where(DBEmailbox.owner_id == user_id, DBEmailbox.enabled == True)
+        async for row in await self._session.stream(query):
+            db_emailbox = row.DBEmailbox
+            yield _convert_db_emailbox_to_emailbox(self._crypto, db_emailbox)
 
 
 def _convert_emailbox_to_db_emailbox(emailbox: EncryptedEmailbox) -> DBEmailbox:
