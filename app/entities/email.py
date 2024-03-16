@@ -135,7 +135,7 @@ class DecryptedEmailbox(base.DecryptedModel):
     owner_id: int
     server_id: str
     address: EmailStr
-    password: str
+    password: SecretStr
     forum_id: int | None = None
     last_fetched_email_id: int | None = None
     enabled: bool | None = None
@@ -147,7 +147,7 @@ class DecryptedEmailbox(base.DecryptedModel):
             owner_id=self.owner_id,
             server_id=self.crypto.encrypt_key(self.server_id),
             address=self.crypto.encrypt_key(self.address),
-            password=self.crypto.encrypt_key(self.password),
+            password=self.crypto.encrypt_key(self.password.get_secret_value()),
             forum_id=self.forum_id,
             last_fetched_email_id=self.last_fetched_email_id,
             enabled=self.enabled,
@@ -175,7 +175,7 @@ class EncryptedEmailbox(base.EncryptedModel):
             owner_id=self.owner_id,
             server_id=self.crypto.decrypt_key(self.server_id),
             address=self.crypto.decrypt_key(self.address),
-            password=self.crypto.decrypt_key(self.password),
+            password=SecretStr(self.crypto.decrypt_key(self.password)),
             forum_id=self.forum_id,
             last_fetched_email_id=self.last_fetched_email_id,
             enabled=self.enabled,

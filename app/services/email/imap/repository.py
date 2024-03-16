@@ -1,6 +1,6 @@
 import logging
 from pathlib import Path
-from typing import Any, AsyncGenerator, Generator, Iterable
+from typing import Any, AsyncGenerator, Generator
 from app.entities.email import EmailUser, IncomingEmail
 from app.exceptions.email import BadResponse
 from app.services.email.imap.session import ImapSession
@@ -19,14 +19,18 @@ class ImapRepository:
         self._session = session
         self._user = user
 
-    async def fetch_emails(self, email_ids: Iterable[str]) -> AsyncGenerator[IncomingEmail, Any]:
+    async def fetch_emails(
+        self, from_id: str, limit: int = 1, from_new: bool = True
+    ) -> AsyncGenerator[IncomingEmail, Any]:
         """Fetch emails from the server"""
-        for email_id in email_ids:
+        email_ids = await self._get_last_email_ids(limit) if from_new else await self._get_first_email_ids(limit)
+        not_sent_ids = [email_id for email_id in email_ids if int(email_id) > int(from_id)]
+        for email_id in not_sent_ids:
             logging.info(f"Fetching email with id={email_id}")
             try:
                 email_bytes = await self._session.fetch_email(email_id)
             except BadResponse as e:
-                logging.warn("{}\nFor email ids: {}".format(e, email_ids))
+                logging.warn("{}\nFor email ids: {}".format(e, not_sent_ids))
                 continue
             email_content = mailparser.parse_from_bytes(email_bytes)
             yield IncomingEmail(
@@ -36,17 +40,6 @@ class ImapRepository:
                 sender=EmailUser(email=str(email_content.from_[0][1]), name=str(email_content.from_[0][0])),
             )
 
-    async def get_first_email_ids(self, count: int = 1) -> list[str]:
-        """Get the first sent email ids from the server"""
-        all_ids = await self._get_all_email_ids()
-        return [str(id_) for id_ in all_ids[:count]]
-
-    async def get_last_email_ids(self, count: int = 1) -> list[str]:
-        """Get the last sent email ids from the server"""
-        all_ids = await self._get_all_email_ids()
-        logging.info("All found email ids: {}".format(all_ids))
-        return [str(id_) for id_ in all_ids[-count:]]
-
     async def select_folder(self, folder: str) -> None:
         """Selects a folder in the mailbox. Default is INBOX"""
         await self._session.select_folder(folder)
@@ -54,6 +47,17 @@ class ImapRepository:
     async def _get_all_email_ids(self) -> list[str]:
         """Get email ids from the server in ascending order"""
         return await self._session.select_email_ids()
+
+    async def _get_first_email_ids(self, count: int = 1) -> list[str]:
+        """Get the first sent email ids from the server"""
+        all_ids = await self._get_all_email_ids()
+        return [str(id_) for id_ in all_ids[:count]]
+
+    async def _get_last_email_ids(self, count: int = 1) -> list[str]:
+        """Get the last sent email ids from the server"""
+        all_ids = await self._get_all_email_ids()
+        logging.info("All found email ids: {}".format(all_ids))
+        return [str(id_) for id_ in all_ids[-count:]]
 
     @contextmanager
     def load_attachments(self, email: IncomingEmail) -> Generator[list[Path], Any, Any]:

@@ -11,3 +11,8 @@ class FernetIDs(Enum):
 
     def __str__(self) -> str:
         return self.value
+
+
+EMAIL_CHUNK_LIMIT: Final[int] = 15
+EMAIL_CONNECTION_ATTEMPTS: Final[int] = 10
+EMAIL_CONNECTION_ATTEMPTS_DELAY: Final[float] = 0.1
