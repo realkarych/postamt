@@ -3,6 +3,9 @@ name = "postamt"
 version = "0.1"
 description = "Telegram Email client"
 authors = ["Andrey Karchevsky <karych@karych.ru>"]
+packages = [
+    { include = "app" }
+]
 
 [tool.poetry.dependencies]
 python = "^3.12"
