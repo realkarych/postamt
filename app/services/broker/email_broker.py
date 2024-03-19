@@ -22,6 +22,7 @@ class EmailBroker:
         self._task = None
 
     async def start(self) -> None:
+        """Starts email broker"""
         if self._task is None:
             self._task = asyncio.create_task(self._produce_emails())
         if self._task.done():
