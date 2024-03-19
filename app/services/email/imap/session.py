@@ -4,10 +4,7 @@ from app.entities.email import EmailAuthData, EmailServer, EmailServers
 import aioimaplib
 
 from app.exceptions.email import BadResponse, ImapConnectionFailed
-
-
-_CONNECTION_ATTEMPTS = 10  # Number of times to attempt to connect to the IMAP server. If not -> connection error
-_CONNECTION_ATTEMPTS_DELAY = 0.1  # Delay between connection attempts (in seconds)
+from app.utils.config import consts
 
 
 class ImapSession:
@@ -18,7 +15,7 @@ class ImapSession:
         self._auth_data = auth_data
 
     async def __aenter__(self) -> "ImapSession":
-        for _ in range(_CONNECTION_ATTEMPTS):
+        for _ in range(consts.EMAIL_CONNECTION_ATTEMPTS):
             with suppress(TimeoutError):
                 self._session = aioimaplib.IMAP4_SSL(
                     host=self._server.imap.host,
@@ -29,7 +26,7 @@ class ImapSession:
                     await self.select_folder()
                     break
             # If connection failed, wait and try again
-            await asyncio.sleep(_CONNECTION_ATTEMPTS_DELAY)
+            await asyncio.sleep(consts.EMAIL_CONNECTION_ATTEMPTS_DELAY)
         # If connection failed _CONNECTION_ATTEMPTS times, raise an exception
         else:
             raise ImapConnectionFailed("Failed to connect to the server ({server}) with auth_data={self._auth_data}")

@@ -4,6 +4,7 @@ WARNING: Do not import this module anywhere (exclude entry-point — __main__.py
 Provide needed config setting via separated middleware.
 """
 
+from dataclasses import dataclass
 from app.utils import paths
 from pydantic import PostgresDsn
 from pydantic_settings import BaseSettings
@@ -11,6 +12,14 @@ from typing import Final
 from os import getenv
 from app.utils.config import entities, consts
 from app.utils import singleton
+
+
+@dataclass(frozen=True, slots=True)
+class Kafka:
+    """Kafka settings"""
+
+    host: str
+    port: int
 
 
 @singleton.good_singleton
@@ -63,3 +72,8 @@ fernet_keys: Final[dict[consts.FernetIDs, bytes]] = {
     consts.FernetIDs.EMAIL: _config.EMAIL_FERNET_KEY,
     consts.FernetIDs.TOPIC: _config.TOPIC_FERNET_KEY,
 }
+
+kafka = Kafka(
+    host="localhost",
+    port=9092,
+)
