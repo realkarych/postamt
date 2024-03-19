@@ -1,5 +1,5 @@
 from typing import Final
 
 
-SEND_EMAIL: Final[str] = "send_email"
-SEND_MSG: Final[str] = "send_msg"
+EMAIL: Final[str] = "EMAIL"
+MSG: Final[str] = "MSG"

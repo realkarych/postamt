@@ -67,15 +67,15 @@ async def main() -> None:
     dp.edited_message.middleware(DbSessionMiddleware(session_pool))
 
     kafka_producer = AIOKafkaProducer(bootstrap_servers=f"{configloader.kafka.host}:{configloader.kafka.port}")
-    kafka_consumer_email_auth = AIOKafkaConsumer(
-        topics.SEND_EMAIL, bootstrap_servers=f"{configloader.kafka.host}:{configloader.kafka.port}"
+    kafka_consumer_email = AIOKafkaConsumer(
+        topics.EMAIL, bootstrap_servers=f"{configloader.kafka.host}:{configloader.kafka.port}"
     )
-    kafka_consumer_send_msg = AIOKafkaConsumer(
-        topics.SEND_MSG, bootstrap_servers=f"{configloader.kafka.host}:{configloader.kafka.port}"
+    kafka_consumer_msg = AIOKafkaConsumer(
+        topics.MSG, bootstrap_servers=f"{configloader.kafka.host}:{configloader.kafka.port}"
     )
     await kafka_producer.start()
-    await kafka_consumer_email_auth.start()
-    await kafka_consumer_send_msg.start()
+    await kafka_consumer_email.start()
+    await kafka_consumer_msg.start()
 
     email_broker = EmailBroker(
         producer=kafka_producer,
@@ -111,8 +111,8 @@ async def main() -> None:
         scheduler.remove_all_jobs()
         scheduler.shutdown()
         await kafka_producer.stop()
-        await kafka_consumer_email_auth.stop()
-        await kafka_consumer_send_msg.stop()
+        await kafka_consumer_email.stop()
+        await kafka_consumer_msg.stop()
 
 
 def _init_scheduler() -> AsyncIOScheduler:

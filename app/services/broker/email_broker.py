@@ -19,6 +19,7 @@ class EmailBroker:
         self._sessionmaker = sessionmaker
         self._email_crypto = email_crypto
         self._producer = producer
+
         self._produce_emails_task = None
 
     async def start(self) -> None:
@@ -41,15 +42,15 @@ class EmailBroker:
 
     async def _produce_emails(self) -> None:
         async with self._sessionmaker() as session:
-            self._email_repo = EmailRepo(session=session, crypto=self._email_crypto)
-            self._user_repo = UserRepo(session=session)
-            async for __encrypted_emailbox in self._email_repo.get_active_emailboxes():
+            email_repo = EmailRepo(session=session, crypto=self._email_crypto)
+            user_repo = UserRepo(session=session)
+            async for __encrypted_emailbox in email_repo.get_active_emailboxes():
                 emailbox = __encrypted_emailbox.decrypt()
                 async with ImapSession(
                     server=get_server_by_id(emailbox.server_id),
                     auth_data=EmailAuthData(email=emailbox.address, password=emailbox.password),
                 ) as session:
-                    user = await self._user_repo.get_user(user_id=emailbox.owner_id)
+                    user = await user_repo.get_user(user_id=emailbox.owner_id)
                     if not user:
                         raise ValueError(f"User with id={emailbox.owner_id} not found while fetching emailbox")
                     imap_repo = ImapRepository(
@@ -60,5 +61,5 @@ class EmailBroker:
                         limit=consts.EMAIL_CHUNK_LIMIT,
                     ):
                         dumped_email = email.model_dump()
-                        await self._producer.send_and_wait(topics.SEND_EMAIL, serializer.to_bytes(data=dumped_email))
+                        await self._producer.send_and_wait(topics.MSG, serializer.to_bytes(data=dumped_email))
                         await self._email_repo.increment_last_email_id(emailbox_id=emailbox.db_id)  # type: ignore
