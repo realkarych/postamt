@@ -76,6 +76,15 @@ class EmailRepo:
         await self._session.execute(query)
         await self._session.commit()
 
+    async def increment_last_email_id(self, emailbox_id: int) -> None:
+        query = (
+            update(DBEmailbox)
+            .where(DBEmailbox.id == emailbox_id)
+            .values(last_fetched_email_id=DBEmailbox.last_fetched_email_id + 1)
+        )
+        await self._session.execute(query)
+        await self._session.commit()
+
     async def emailbox_exists(self, emailbox: DecryptedEmailbox) -> bool:
         query = select(DBEmailbox).where(DBEmailbox.owner_id == emailbox.owner_id)
         user_emailboxes = [
