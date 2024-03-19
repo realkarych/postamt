@@ -24,6 +24,8 @@ class EmailBroker:
     async def start(self) -> None:
         if self._task is None:
             self._task = asyncio.create_task(self._produce_emails())
+        if self._task.done():
+            self._task = None
 
     async def stop(self) -> None:
         if self._task is not None:
