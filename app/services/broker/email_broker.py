@@ -19,22 +19,25 @@ class EmailBroker:
         self._sessionmaker = sessionmaker
         self._email_crypto = email_crypto
         self._producer = producer
-        self._task = None
+        self._produce_emails_task = None
 
     async def start(self) -> None:
         """Starts email broker"""
-        if self._task is None:
-            self._task = asyncio.create_task(self._produce_emails())
-        if self._task.done():
-            self._task = None
+        await self._start_produce_emails()
 
     async def stop(self) -> None:
-        if self._task is not None:
+        if self._produce_emails_task is not None:
             try:
-                self._task.cancel()
+                self._produce_emails_task.cancel()
             except asyncio.CancelledError:
                 pass
-            self._task = None
+            self._produce_emails_task = None
+
+    async def _start_produce_emails(self) -> None:
+        if self._produce_emails_task is None:
+            self._produce_emails_task = asyncio.create_task(self._produce_emails())
+        if self._produce_emails_task.done():
+            self._produce_emails_task = None
 
     async def _produce_emails(self) -> None:
         async with self._sessionmaker() as session:
