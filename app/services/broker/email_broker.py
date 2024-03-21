@@ -61,5 +61,5 @@ class EmailBroker:
                         limit=consts.EMAIL_CHUNK_LIMIT,
                     ):
                         dumped_email = email.model_dump()
-                        await self._producer.send_and_wait(topics.MSG, serializer.to_bytes(data=dumped_email))
+                        await self._producer.send_and_wait(topics.EMAIL, serializer.to_bytes(data=dumped_email))
                         await self._email_repo.increment_last_email_id(emailbox_id=emailbox.db_id)  # type: ignore
