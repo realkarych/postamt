@@ -11,7 +11,7 @@ packages = [
 python = "^3.12"
 greenlet = "*"
 asyncpg = "^0.29.0"
-sqlalchemy = "==2.0.28"
+sqlalchemy = "==2.0.29"
 alembic = "==1.13.1"
 pydantic-settings = "==2.2.1"
 cryptography = "^42.0.5"
