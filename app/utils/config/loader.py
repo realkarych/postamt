@@ -75,5 +75,5 @@ fernet_keys: Final[dict[consts.FernetIDs, bytes]] = {
 
 kafka = Kafka(
     host="kafka",
-    port=29092,
+    port=9092,
 )
