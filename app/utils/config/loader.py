@@ -22,6 +22,14 @@ class Kafka:
     port: int
 
 
+@dataclass(frozen=True, slots=True)
+class WebApp:
+    """WebApp settings"""
+
+    host: str
+    port: int
+
+
 @singleton.good_singleton
 class AppConfig(BaseSettings):
     """
@@ -38,6 +46,12 @@ class AppConfig(BaseSettings):
     POSTGRES_DB: str = getenv("POSTGRES_DB", "postamt")
     POSTGRES_USER: str = getenv("POSTGRES_USER", "docker")
     POSTGRES_PASSWORD: str = getenv("DB_PASSWORD", "")
+
+    KAFKA_HOST: str = getenv("KAFKA_HOST", "kafka")
+    KAFKA_PORT: int = int(getenv("KAFKA_PORT", 9092))
+
+    WEBAPP_HOST: str = getenv("WEBAPP_HOST", "")
+    WEBAPP_PORT: int = int(getenv("WEBAPP_PORT", 8000))
 
     EMAIL_FERNET_KEY: bytes = bytes(getenv("EMAIL_FERNET_KEY", ""), encoding=consts.FERNET_KEYS_ENCODING)
     TOPIC_FERNET_KEY: bytes = bytes(getenv("TOPIC_FERNET_KEY", ""), encoding=consts.FERNET_KEYS_ENCODING)
@@ -74,6 +88,11 @@ fernet_keys: Final[dict[consts.FernetIDs, bytes]] = {
 }
 
 kafka = Kafka(
-    host="kafka",
-    port=9092,
+    host=_config.KAFKA_HOST,
+    port=_config.KAFKA_PORT,
+)
+
+webapp = WebApp(
+    host=_config.WEBAPP_HOST,
+    port=_config.WEBAPP_PORT,
 )
