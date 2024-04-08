@@ -13,6 +13,8 @@ from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.utils.i18n import I18n, SimpleI18nMiddleware
 from aiokafka import AIOKafkaConsumer, AIOKafkaProducer
 
+from app.web import app as webapp
+
 from app.core.handlers import factory
 
 from app.core.handlers.private_chat import (
@@ -98,7 +100,10 @@ async def main() -> None:
     # ------------------------------------------------------------
 
     try:
-        await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
+        await asyncio.gather(
+            webapp.start(host=configloader.webapp.host, port=configloader.webapp.port),
+            dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types()),
+        )
     finally:
         await dp.storage.close()
         await bot.session.close()

@@ -7,3 +7,4 @@ LOCALES_DIR: Final[PurePath] = PurePath(WORKING_DIR / "locales")
 TEMPORARY_ATTACHMENTS_DIR: Final[PurePath] = PurePath(ROOT_DIR / ".cache")
 
 LOGO_IMAGE_PATH: Final[PurePath] = PurePath(WORKING_DIR / "assets" / "logo.jpg")
+FONTS_DIR_PATH: Final[PurePath] = PurePath(WORKING_DIR / "assets" / "fonts")
