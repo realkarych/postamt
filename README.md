@@ -8,11 +8,13 @@
 
 <hr>
 
-## 👋 Say hello to POSTAMT
+## 🕵️‍♂️ Check Demo
 
 - **Web3 url:** https://postamt_robot.t.me
 - **Classic url:** https://t.me/postamt_robot
 - **In Telegram:** `@postamt_robot`
+
+If you were enjoyed, setup your own instance.
 
 ## 🚀 Features
 
