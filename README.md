@@ -26,13 +26,14 @@ If you were enjoyed, setup your own instance.
 
 - **Security:** POSTAMT never requests two-factor authentication and does not have access to the danger zone of your Email account. It does not delete emails, manage passwords and personal data. Connection is made via auto-generated IMAP/SMTP access keys. Your emails are not saved or cached anywhere after having read (even on the Telegram servers)
 
-## ❞ Why named POSTAMT?
+## 🖥️ Installation
 
-This project is named in honor of the St. Petersburg Main Post Office [Главпочтамт / Glavpochtamt], a monument of Russian history and culture.
+We acknowledge your desire for full control over your data. Therefore, all source codes for the project are open, allowing you to host the project locally on your own.
 
-"Postamt" is a German word that translates to "post office" in English. It refers to a facility or building where postal services are provided. Post offices are responsible for handling mail and packages, selling postage stamps, offering various postal services, and providing a range of other services related to mail delivery and communication. Postamt plays a crucial role in the postal system, facilitating the sending and receiving of mail and packages within a region or country.
+To launch project locally:
 
-Our POSTAMT semantically resembles a post office.
+- Check our Docs: <a href="./DOCS.md">DOCS.md</a>
+- Follow the Guideline: <a href="./INSTALLATION.md">INSTALLATION.md</a>
 
 ## 📊 Roadmap [to the first beta]
 
@@ -45,7 +46,7 @@ Our POSTAMT semantically resembles a post office.
 - [x] **Database:** Implement data schemas and repositories
 - [x] **Telegram "UI" stage 1:** Implement base functionality with registration, adding Email account, group setup
 - [x] **Message broker (Kafka):** Setup Kafka as a single interface to send emails, answer messages
-- [ ] **Telegram "UI" stage 2:** Implement Telegram WebViews to check emails
+- [x] **Telegram "UI" stage 2:** Implement Telegram WebViews to check emails
 - [ ] **GPT Model:** Integrate GPT API as a emails' summary executor. Candidates: OpenAI, LLaMa
 - [ ] **Flood controller:** Set up anti-spam system (on middlewares layer)
 - [ ] **Core service:** Implement SMTP-service
@@ -53,14 +54,13 @@ Our POSTAMT semantically resembles a post office.
 - [ ] **Channel subscription:** To use bot, user need to be subscribed to https://t.me/postamt_channel (create filter)
 - [ ] **Grafana:** Add [Grafana](https://grafana.com/) dashboard to check statistics
 
-## 🖥️ Installation
+## ❞ Why named POSTAMT?
 
-We acknowledge your desire for full control over your data. Therefore, all source codes for the project are open, allowing you to host the project locally on your own.
+This project is named in honor of the St. Petersburg Main Post Office [Главпочтамт / Glavpochtamt], a monument of Russian history and culture.
 
-To launch project locally:
+"Postamt" is a German word that translates to "post office" in English. It refers to a facility or building where postal services are provided. Post offices are responsible for handling mail and packages, selling postage stamps, offering various postal services, and providing a range of other services related to mail delivery and communication. Postamt plays a crucial role in the postal system, facilitating the sending and receiving of mail and packages within a region or country.
 
-- Check our Docs: <a href="./DOCS.md">DOCS.md</a>
-- Follow the Guideline: <a href="./INSTALLATION.md">INSTALLATION.md</a>
+Our POSTAMT semantically resembles a post office.
 
 ## 🙏 Contributing
 
