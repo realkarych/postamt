@@ -21,7 +21,7 @@ mail-parser = "==3.15.0"
 aiokafka = "==0.10.0"
 ormsgpack = "^1.4.2"
 apscheduler = "==3.10.4"
-flet = "==0.21.2"
+flet = "==0.23.1"
 
 [tool.poetry.dependencies.aiogram]
 version = "^3.4.1"
