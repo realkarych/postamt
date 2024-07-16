@@ -8,14 +8,6 @@
 
 <hr>
 
-## 🕵️‍♂️ Check Demo
-
-- **Web3 url:** https://postamt_robot.t.me
-- **Classic url:** https://t.me/postamt_robot
-- **In Telegram:** `@postamt_robot`
-
-If you were enjoyed, setup your own instance.
-
 ## 🚀 Features
 
 - **Email Management:** Perform various actions on your emails, such as reading, replying, sending, attaching files, and more.
