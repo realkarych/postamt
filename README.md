@@ -38,7 +38,7 @@ To launch project locally:
 - [x] **Database:** Implement data schemas and repositories
 - [x] **Telegram "UI" stage 1:** Implement base functionality with registration, adding Email account, group setup
 - [x] **Message broker (Kafka):** Setup Kafka as a single interface to send emails, answer messages
-- [x] **Telegram "UI" stage 2:** Implement Telegram WebViews to check emails
+- [ ] **Telegram "UI" stage 2:** Implement Telegram WebViews to check emails
 - [ ] **GPT Model:** Integrate GPT API as a emails' summary executor. Candidates: OpenAI, LLaMa
 - [ ] **Flood controller:** Set up anti-spam system (on middlewares layer)
 - [ ] **Core service:** Implement SMTP-service
